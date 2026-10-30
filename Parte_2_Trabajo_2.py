@@ -31,8 +31,76 @@ $$\text{LGD} = 1 - \frac{\text{total_rec_prncp} + \text{recoveries} - \text{coll
 # PUNTO 1: Construcción de la variable objetivo LGD
 # ==============================================================================
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
+import joblib
+
+# Inicializaci?n y compatibilidad para ejecuci?n aut?noma (standalone) o en Colab
+BASE_DIR = Path(__file__).resolve().parent
+
+if "cohorte" not in globals():
+    archivo_cohorte = BASE_DIR / "datos" / "base_procesada_cohorte.csv.gz"
+    if archivo_cohorte.exists():
+        print(f"Cargando cohorte procesada offline: {archivo_cohorte}")
+        cohorte = pd.read_csv(archivo_cohorte, low_memory=False)
+        cohorte["target_pd"] = cohorte["target_pd"].astype(int)
+    else:
+        raise FileNotFoundError(f"No se encontr? el dataset en {archivo_cohorte}")
+
+if "FEATURES" not in globals():
+    FEATURES = [
+        "loan_amnt", "annual_inc", "dti",
+        "delinq_2yrs", "inq_last_6mths",
+        "open_acc", "pub_rec", "revol_bal",
+        "revol_util", "total_acc",
+        "credit_history_years",
+        "emp_length", "home_ownership", "purpose"
+    ]
+
+if "preprocesador" not in globals():
+    ruta_prep = BASE_DIR / "modelos" / "preprocesador.joblib"
+    if ruta_prep.exists():
+        print(f"Cargando preprocesador entrenado: {ruta_prep}")
+        preprocesador = joblib.load(ruta_prep)
+    else:
+        from sklearn.compose import ColumnTransformer
+        from sklearn.pipeline import Pipeline
+        from sklearn.impute import SimpleImputer
+        from sklearn.preprocessing import StandardScaler, OneHotEncoder
+        NUMERICAS = [c for c in FEATURES if c not in ["emp_length", "home_ownership", "purpose"]]
+        CATEGORICAS = ["emp_length", "home_ownership", "purpose"]
+        num_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler())
+        ])
+        cat_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("encoder", OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore"))
+        ])
+        preprocesador = ColumnTransformer([
+            ("num", num_pipeline, NUMERICAS),
+            ("cat", cat_pipeline, CATEGORICAS)
+        ])
+        train_df = cohorte.loc[cohorte["split"].eq("train"), FEATURES]
+        preprocesador.fit(train_df)
+
+if "SALIDA_EVALUACION" not in globals():
+    SALIDA_EVALUACION = BASE_DIR / "salidas_evaluacion"
+    SALIDA_EVALUACION.mkdir(exist_ok=True, parents=True)
+
+if "datos_evaluacion" not in globals():
+    ruta_mlp_pd = BASE_DIR / "modelos" / "mlp_pd.joblib"
+    if ruta_mlp_pd.exists():
+        print(f"Cargando MLP PD de referencia: {ruta_mlp_pd}")
+        datos_evaluacion = {"red": joblib.load(ruta_mlp_pd)}
+    else:
+        from sklearn.neural_network import MLPClassifier
+        X_tr = preprocesador.transform(cohorte.loc[cohorte["split"].eq("train"), FEATURES])
+        y_tr = cohorte.loc[cohorte["split"].eq("train"), "target_pd"].to_numpy(dtype=int)
+        mlp = MLPClassifier(hidden_layer_sizes=(32, 16), max_iter=50, random_state=42)
+        mlp.fit(X_tr, y_tr)
+        datos_evaluacion = {"red": mlp}
 
 def calcular_lgd_objetivo(df_entrada):
     """
@@ -352,7 +420,8 @@ ax.spines["right"].set_visible(False)
 
 plt.tight_layout()
 plt.savefig("salida_figura_8_distribucion_lgd.png", dpi=150)
-plt.show()
+# plt.show()
+plt.close()
 
 """### 5 y 6. Pérdida Esperada ($E[L]$) y Exposición al Incumplimiento ($\text{EAD}$)
 

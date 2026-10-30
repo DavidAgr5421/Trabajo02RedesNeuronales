@@ -494,7 +494,7 @@ st.markdown("""
         <div class="header-subtitle">Modelo de Redes Neuronales Artificiales (MLP) · Lending Club Dataset</div>
     </div>
     <div class="nav-actions">
-        <a class="nav-btn" href="https://github.com" target="_blank">
+        <a class="nav-btn" href="https://davidagr5421.github.io/Trabajo02RedesNeuronales/" target="_blank">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             Reporte Blog
         </a>
@@ -502,7 +502,7 @@ st.markdown("""
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
             Video Demo
         </a>
-        <a class="nav-btn" href="https://github.com" target="_blank">
+        <a class="nav-btn" href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales" target="_blank">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
             GitHub
         </a>

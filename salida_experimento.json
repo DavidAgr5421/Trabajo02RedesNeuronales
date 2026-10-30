@@ -1,44 +1,43 @@
 {
   "configuracion": {
     "arquitectura": [
-      64,
       32,
       16
     ],
-    "activacion": "tanh",
+    "activacion": "relu",
     "optimizador": "adam",
     "tasa_aprendizaje": 0.003,
-    "regularizacion_alpha": 0.01,
+    "regularizacion_alpha": 0.0001,
     "max_epocas": 40,
     "paciencia": 6,
     "batch_size": 256,
     "semilla": 42,
     "scorecard": {
-      "puntaje_base_S0": 650.0,
+      "puntaje_base_S0": 600.0,
       "odds_referencia_Odds0": 20.0,
-      "puntos_duplicar_odds_PDO": 40.0
+      "puntos_duplicar_odds_PDO": 50.0
     }
   },
-  "parametros_entrenables": 5889,
+  "parametros_entrenables": 2177,
   "epocas_ejecutadas": 9,
-  "tiempo_total_segundos": 2.57,
+  "tiempo_total_segundos": 1.35,
   "validacion": {
-    "AUC": 0.6244,
-    "Gini": 0.2488,
-    "KS": 0.1789,
-    "Brier": 0.11665,
-    "BCE": 0.39252
+    "AUC": 0.6166,
+    "Gini": 0.2332,
+    "KS": 0.1675,
+    "Brier": 0.11714,
+    "BCE": 0.39488
   },
   "prueba": {
-    "AUC": 0.614,
-    "Gini": 0.228,
-    "KS": 0.171,
-    "Brier": 0.11594,
-    "BCE": 0.39091
+    "AUC": 0.6132,
+    "Gini": 0.2264,
+    "KS": 0.1597,
+    "Brier": 0.11615,
+    "BCE": 0.39218
   },
   "scorecard": {
-    "Factor": 57.7078,
-    "Offset": 477.1229,
-    "Score_Mediano_Test": 599.6
+    "Factor": 72.1348,
+    "Offset": 383.9036,
+    "Score_Mediano_Test": 540.2
   }
 }
