@@ -1,0 +1,44 @@
+{
+  "configuracion": {
+    "arquitectura": [
+      64,
+      32,
+      16
+    ],
+    "activacion": "tanh",
+    "optimizador": "adam",
+    "tasa_aprendizaje": 0.003,
+    "regularizacion_alpha": 0.01,
+    "max_epocas": 40,
+    "paciencia": 6,
+    "batch_size": 256,
+    "semilla": 42,
+    "scorecard": {
+      "puntaje_base_S0": 650.0,
+      "odds_referencia_Odds0": 20.0,
+      "puntos_duplicar_odds_PDO": 40.0
+    }
+  },
+  "parametros_entrenables": 5889,
+  "epocas_ejecutadas": 9,
+  "tiempo_total_segundos": 2.57,
+  "validacion": {
+    "AUC": 0.6244,
+    "Gini": 0.2488,
+    "KS": 0.1789,
+    "Brier": 0.11665,
+    "BCE": 0.39252
+  },
+  "prueba": {
+    "AUC": 0.614,
+    "Gini": 0.228,
+    "KS": 0.171,
+    "Brier": 0.11594,
+    "BCE": 0.39091
+  },
+  "scorecard": {
+    "Factor": 57.7078,
+    "Offset": 477.1229,
+    "Score_Mediano_Test": 599.6
+  }
+}

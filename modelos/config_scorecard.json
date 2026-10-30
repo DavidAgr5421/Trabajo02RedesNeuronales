@@ -1,0 +1,59 @@
+{
+  "S0": 600.0,
+  "ODDS0": 20.0,
+  "PDO": 50.0,
+  "FACTOR": 72.13475204444818,
+  "OFFSET": 383.9035952556319,
+  "NUMERICAS": [
+    "loan_amnt",
+    "annual_inc",
+    "dti",
+    "delinq_2yrs",
+    "inq_last_6mths",
+    "open_acc",
+    "pub_rec",
+    "revol_bal",
+    "revol_util",
+    "total_acc",
+    "credit_history_years"
+  ],
+  "CATEGORICAS": [
+    "emp_length",
+    "home_ownership",
+    "purpose"
+  ],
+  "FEATURES": [
+    "loan_amnt",
+    "annual_inc",
+    "dti",
+    "delinq_2yrs",
+    "inq_last_6mths",
+    "open_acc",
+    "pub_rec",
+    "revol_bal",
+    "revol_util",
+    "total_acc",
+    "credit_history_years",
+    "emp_length",
+    "home_ownership",
+    "purpose"
+  ],
+  "medianas_train": {
+    "loan_amnt": 8000.0,
+    "annual_inc": 56004.0,
+    "dti": 13.094999999999999,
+    "delinq_2yrs": 0.0,
+    "inq_last_6mths": 1.0,
+    "open_acc": 8.0,
+    "pub_rec": 0.0,
+    "revol_bal": 8191.0,
+    "revol_util": 48.1,
+    "total_acc": 20.0,
+    "credit_history_years": 12.083333333333334
+  },
+  "modas_train": {
+    "emp_length": "10+ years",
+    "home_ownership": "RENT",
+    "purpose": "debt_consolidation"
+  }
+}
