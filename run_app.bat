@@ -1,3 +1,3 @@
 @echo off
 echo Levantando aplicacion web de Scoring de Riesgo Crediticio...
-python -m streamlit run app.py
+python -m streamlit run app_streamlit/app.py

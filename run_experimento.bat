@@ -1,2 +1,2 @@
 @echo off
-python ejecutar_experimento.py %*
+python sustentacion/ejecutar_experimento.py %*
