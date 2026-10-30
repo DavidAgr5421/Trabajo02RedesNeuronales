@@ -3718,3 +3718,367 @@ La MLP presenta una estimación promedio más cercana a la frecuencia observada 
 
 Por último, la capacidad discriminativa continúa siendo limitada. Por esta razón, los resultados no justifican utilizar directamente las probabilidades estimadas para tomar decisiones automáticas de aprobación de créditos sin realizar validaciones adicionales.
 
+## Derivación y construcción de la scorecard
+
+Se define $O=(1-p)/p$ como **odds de buenos frente a malos**. Se elige una escala convencional con **600 puntos cuando $O_0=20$** y **50 puntos para duplicar las odds (PDO)**. Estos valores no se estiman con test. SAS documenta esta parametrización mediante odds, puntaje de referencia y PDO; los valores concretos aquí son nuestra elección.
+
+Partimos de $S=A+B\ln O$. Al duplicar las odds,
+
+$$S(2O)-S(O)=B\ln2=PDO\quad\Rightarrow\quad B=\frac{50}{\ln2}.$$
+
+Al imponer el punto de referencia $600=A+B\ln20$, obtenemos
+
+$$A=600-B\ln20,\qquad S=A+B\ln\frac{1-p}{p}=A-B\operatorname{logit}(p).$$
+
+La transformación inversa es $p=\sigma((A-S)/B)$. Un puntaje mayor indica menor PD: 600 puntos equivalen a $p=1/21$ y 650 a $p=1/41$. La transformación conserva las probabilidades y su calibración; no añade capacidad predictiva. No se imponen límites arbitrarios al puntaje ni se define aquí una política de aprobación.
+
+**Cómo se obtienen los puntos.** Para la regresión logística, $\operatorname{logit}(p)=b+\sum_j\beta_jx'_j$, con entradas transformadas por el preprocesador guardado. Entonces:
+
+$$S_{base}=A-Bb,\qquad puntos_j=-B\beta_jx'_j,\qquad S=S_{base}+\sum_jpuntos_j.$$
+
+Esta descomposición es exacta y se exportan los coeficientes por columna transformada. Para las variables continuas debe aplicarse la misma imputación y estandarización; las categóricas usan las categorías aprendidas en train.
+
+El MLP introduce interacciones y no ofrece en general puntos independientes y constantes por variable. Su score total sí es exacto mediante la fórmula anterior. En la tarea 7 se obtienen **puntos locales por perfil**, con una aproximación de Shapley sobre su logit; no se presenta esa explicación como una tabla universal.
+
+Para evitar logaritmos infinitos, solo una PD exactamente igual a 0 o 1 se sustituye por $10^{-12}$ o $1-10^{-12}$. Las probabilidades interiores se conservan, incluso si son muy pequeñas. La red principal no alcanza esos extremos en estos datos.
+
+El **percentil de referencia** se calcula con la distribución de scores de entrenamiento: $100\,\#\{S_{train}\leq S\}/n_{train}$. Se incluyen empates por la derecha. Ubica el crédito respecto a esa cohorte histórica de préstamos otorgados.
+"""
+
+# Construcción de la scorecard
+
+from scipy.special import expit
+
+# Parámetros convencionales de la escala
+S0 = 600.0
+ODDS0 = 20.0
+PDO = 50.0
+
+FACTOR = PDO / np.log(2)
+OFFSET = S0 - FACTOR * np.log(ODDS0)
+
+
+# Convertir probabilidad de incumplimiento a puntaje
+def prob_a_score(p):
+
+    p = np.asarray(p, dtype=float)
+
+    if (
+        not np.isfinite(p).all()
+        or ((p < 0) | (p > 1)).any()
+    ):
+        raise ValueError(
+            "La probabilidad debe estar entre 0 y 1."
+        )
+
+    # Solo ajustar probabilidades exactamente 0 o 1
+    q = np.where(
+        p == 0,
+        1e-12,
+        np.where(p == 1, 1 - 1e-12, p)
+    )
+
+    return OFFSET + FACTOR * (
+        np.log1p(-q) - np.log(q)
+    )
+
+
+# Convertir puntaje nuevamente a probabilidad
+def score_a_prob(s):
+
+    return expit(
+        (OFFSET - np.asarray(s)) / FACTOR
+    )
+
+
+# Calcular el logit de la red neuronal
+def logit_red(modelo, Z):
+
+    h = np.asarray(Z)
+
+    for W, b in zip(
+        modelo.coefs_[:-1],
+        modelo.intercepts_[:-1]
+    ):
+
+        h = h @ W + b
+
+        if modelo.activation == "tanh":
+            h = np.tanh(h)
+
+        elif modelo.activation == "relu":
+            h = np.maximum(h, 0)
+
+        elif modelo.activation == "logistic":
+            h = expit(h)
+
+        elif modelo.activation != "identity":
+            raise ValueError(
+                "Función de activación desconocida."
+            )
+
+    return (
+        h @ modelo.coefs_[-1]
+        + modelo.intercepts_[-1]
+    ).ravel()
+
+
+# Construir scorecard y guardar resultados
+def crear_scorecard(d):
+
+    out = d["salida"]
+
+    # 1. Verificar puntos de referencia
+    assert np.isclose(
+        prob_a_score(1 / 21), 600
+    )
+
+    assert np.isclose(
+        prob_a_score(1 / 41), 650
+    )
+
+    # Un aumento de PD debe reducir el puntaje
+    assert np.all(
+        np.diff(
+            prob_a_score(
+                np.linspace(0.001, 0.999, 100)
+            )
+        ) < 0
+    )
+
+    # 2. Verificar conversión inversa
+    np.testing.assert_allclose(
+        score_a_prob(prob_a_score(d["p_test"])),
+        d["p_test"],
+        atol=1e-12
+    )
+
+    # 3. Comprobar que el logit reproduce la MLP
+    assert d["red"].out_activation_ == "logistic"
+
+    np.testing.assert_allclose(
+        expit(
+            logit_red(
+                d["red"],
+                d["Z"]["validation"]
+            )
+        ),
+        d["red"].predict_proba(
+            d["Z"]["validation"]
+        )[:, 1],
+        atol=1e-12
+    )
+
+    # 4. Distribución de referencia: train
+    probabilidades_train = (
+        d["red"].predict_proba(
+            d["Z"]["train"]
+        )[:, 1]
+    )
+
+    referencia = np.sort(
+        prob_a_score(probabilidades_train)
+    )
+
+    np.savez_compressed(
+        out / "referencia_percentil_train.npz",
+        scores_ordenados=referencia
+    )
+
+    # 5. Calcular scores de las tres particiones
+    filas = []
+
+    for split in ["train", "validation", "test"]:
+
+        probabilidades = (
+            d["red"].predict_proba(
+                d["Z"][split]
+            )[:, 1]
+        )
+
+        scores = prob_a_score(probabilidades)
+
+        percentiles = (
+            100
+            * np.searchsorted(
+                referencia,
+                scores,
+                side="right"
+            )
+            / len(referencia)
+        )
+
+        tabla = pd.DataFrame({
+            "id": (
+                d["datos"][split]["id"]
+                .astype(str)
+                .to_numpy()
+            ),
+            "split": split,
+            "PD": probabilidades,
+            "score": scores,
+            "score_redondeado": (
+                np.rint(scores).astype(int)
+            ),
+            "percentil_train": percentiles
+        })
+
+        filas.append(tabla)
+
+    puntajes = pd.concat(
+        filas,
+        ignore_index=True
+    )
+
+    puntajes.to_csv(
+        out / "puntajes_y_percentiles.csv.gz",
+        index=False,
+        compression="gzip"
+    )
+
+    # 6. Guardar configuración de la scorecard
+    configuracion_scorecard = {
+        "modelo_principal": "MLP semilla 42",
+        "score_base": S0,
+        "odds_buenos_malos_referencia": ODDS0,
+        "PD_referencia": 1 / (1 + ODDS0),
+        "PDO": PDO,
+        "factor": FACTOR,
+        "offset": OFFSET,
+        "formula": (
+            "score = offset + factor * ln((1-PD)/PD)"
+        ),
+        "inversa": (
+            "PD = sigmoid((offset-score)/factor)"
+        ),
+        "epsilon_solo_para_PD_exactamente_0_o_1": 1e-12,
+        "percentil": (
+            "100 * numero de scores train <= score / n_train"
+        ),
+        "redondeo": (
+            "Solo presentacion, sin recortar rango"
+        )
+    }
+
+    (
+        out / "configuracion_scorecard.json"
+    ).write_text(
+        json.dumps(
+            configuracion_scorecard,
+            ensure_ascii=False,
+            indent=2
+        ),
+        encoding="utf-8"
+    )
+
+    # 7. Ejemplos de conversión de PD a score
+    ejemplos = pd.DataFrame({
+        "PD": [
+            0.01,
+            1 / 41,
+            1 / 21,
+            0.10,
+            0.20,
+            0.40
+        ]
+    })
+
+    ejemplos["odds_buenos_malos"] = (
+        (1 - ejemplos["PD"]) / ejemplos["PD"]
+    )
+
+    ejemplos["score"] = prob_a_score(
+        ejemplos["PD"]
+    )
+
+    ejemplos.to_csv(
+        out / "ejemplos_conversion_score.csv",
+        index=False
+    )
+
+    # 8. Scorecard aditiva de regresión logística
+    nombres = d["pre"].get_feature_names_out()
+
+    coeficientes = pd.DataFrame({
+        "columna_transformada": nombres,
+        "beta": d["lr"].coef_[0],
+        "puntos_por_unidad_transformada": (
+            -FACTOR * d["lr"].coef_[0]
+        )
+    })
+
+    coeficientes.to_csv(
+        out / "scorecard_logistica_coeficientes.csv",
+        index=False
+    )
+
+    puntos_base_logistica = float(
+        OFFSET - FACTOR * d["lr"].intercept_[0]
+    )
+
+    (
+        out / "scorecard_logistica_base.json"
+    ).write_text(
+        json.dumps({
+            "puntos_base": puntos_base_logistica,
+            "formula": (
+                "base + suma(-factor * beta_j * x_transformada_j)"
+            )
+        }),
+        encoding="utf-8"
+    )
+
+    # 9. Verificar descomposición logística exacta
+    scores_logistica = (
+        puntos_base_logistica
+        + d["Z"]["test"] @ (
+            -FACTOR * d["lr"].coef_[0]
+        )
+    )
+
+    np.testing.assert_allclose(
+        scores_logistica,
+        prob_a_score(d["p_lr_test"]),
+        atol=1e-9
+    )
+
+    # 10. Mostrar resultados
+    print("Tarea 6. Construcción de scorecard\n")
+
+    print("Factor:", FACTOR)
+    print("Offset:", OFFSET)
+
+    print("\nTabla 24. Ejemplos de conversión PD a score\n")
+    print(ejemplos.to_string(index=False))
+
+    print(
+        "\nPercentil referido exclusivamente a los",
+        len(referencia),
+        "créditos de entrenamiento."
+    )
+
+    print("\nRegistros con puntajes:", len(puntajes))
+
+    print(
+        "Descomposición logística verificada correctamente."
+    )
+
+    # Guardar resultados para las siguientes tareas
+    d.update({
+        "puntajes": puntajes,
+        "configuracion_scorecard": configuracion_scorecard,
+        "coeficientes_scorecard": coeficientes
+    })
+
+    return d
+
+# Ejecutar la construcción de la scorecard
+
+with threadpool_limits(limits=1):
+    datos_evaluacion = crear_scorecard(
+        datos_evaluacion
+    )
+
+print("\nScorecard generada correctamente.")
+print("No se han reentrenado ni modificado los modelos.")
+
