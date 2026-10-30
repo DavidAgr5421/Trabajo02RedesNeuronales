@@ -3,51 +3,125 @@
 **Curso:** Redes Neuronales y Algoritmos Bioinspirados  
 **Institución:** Universidad Nacional de Colombia — Facultad de Minas  
 **Semestre:** 2026-02  
-**Dataset original:** [Lending Club - Credit Risk Analysis (Kaggle)](https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset)
+**Dataset original:** [Lending Club - Credit Risk Analysis (Kaggle)](https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset)  
+**Reporte Técnico (GitHub Pages):** [https://davidagr5421.github.io/Trabajo02RedesNeuronales/](https://davidagr5421.github.io/Trabajo02RedesNeuronales/)
 
 ---
 
-## 📌 Descripción del Proyecto
+## 📌 Organización Modular del Repositorio
 
-Este repositorio contiene la solución técnica y reproducible para la evaluación de riesgo crediticio en créditos de consumo de Lending Club:
-1. **Parte 1 (Clasificación binaria):** Estimación de la Probabilidad de Incumplimiento ($PD$) mediante un Perceptrón Multicapa (`MLPClassifier`), calibración probabilística (Brier, Curva de Calibración) y construcción de la Scorecard oficial ($S_0=600$, $Odds_0=20$, $PDO=50$).
-2. **Parte 2 (Regresión continua):** Modelado de la Pérdida Dado el Incumplimiento ($LGD$) acotada en $[0, 1]$ mediante `MLPRegressor` sobre créditos castigados y cálculo de la Pérdida Esperada agregada:
-   $$\mathbb{E}[L] = PD \times LGD \times EAD$$
-3. **Aplicación Web:** Sistema interactivo en Streamlit con diseño dark-tech para inferencia en tiempo real, velocímetro de scoring, comparativa poblacional y simulador de sensibilidad *"What-if"*.
+El proyecto ha sido estructurado en módulos y carpetas independientes para cada componente del trabajo:
+
+```text
+Trabajo02RedesNeuronales/
+├── parte_1/                  # PARTE 1: Probabilidad de Incumplimiento (PD)
+│   ├── parte1.py             # Script completo (Tareas 1 a 7)
+│   └── README.md             # Guía metodológica, scorecard e interpretabilidad
+│
+├── parte_2/                  # PARTE 2: Pérdida Dado el Incumplimiento (LGD)
+│   ├── Parte_2_Trabajo_2.py  # Script completo (LGD, 30 semillas, E[L])
+│   ├── salida_figura_8...png # Gráfica de distribución de LGD
+│   └── README.md             # Justificación matemática y evaluación
+│
+├── app_streamlit/            # APLICACIÓN WEB INTERACTIVA (STREAMLIT)
+│   ├── app.py                # Interfaz UI/UX Dark-Tech (Vino Tinto / Crimson)
+│   └── README.md             # Documentación de inferencia y simulación
+│
+├── sustentacion/             # MÓDULO DE SUSTENTACIÓN ORAL
+│   ├── ejecutar_experimento.py # Script de reentrenamiento CLI en caliente
+│   ├── config_demo.json      # Configuración de hiperparámetros
+│   ├── salida_experimento.json # Métricas de la última corrida
+│   └── README.md             # Instrucciones para la defensa en vivo
+│
+├── docs/                     # GITHUB PAGES (PUBLICACIÓN WEB)
+│   ├── index.html            # Informe técnico interactivo
+│   ├── assets/               # CSS técnico y figuras metodológicas
+│   ├── blog/                 # Publicaciones y blog complementario
+│   ├── Trabajo 2 (1).pdf     # Documento formal descargable
+│   └── .nojekyll             # Servido directo sin motor Jekyll
+│
+├── datos/                    # DATOS PROCESADOS OFFLINE
+│   └── base_procesada_cohorte.csv.gz # Cohorte filtrada y particionada (74.959 filas)
+│
+├── modelos/                  # ARTEFACTOS SERIALIZADOS DE REDES NEURONALES
+│   ├── preprocesador.joblib  # ColumnTransformer ajustado en train
+│   ├── mlp_pd.joblib         # MLPClassifier (Probabilidad de Incumplimiento)
+│   ├── mlp_lgd.joblib        # MLPRegressor (LGD en [0, 1])
+│   ├── referencia_percentil_train.npz # Puntajes históricos para percentiles
+│   └── config_scorecard.json # Parámetros oficiales S0=600, Odds0=20, PDO=50
+│
+├── salidas_evaluacion/       # RESULTADOS EXPORTADOS
+│   └── perdida_esperada_test.csv.gz # Pérdida esperada crédito a crédito en prueba
+│
+├── run_app.bat / .sh         # Lanzador de la app web (1 solo comando)
+├── run_experimento.bat / .sh # Lanzador de sustentación oral (1 solo comando)
+├── exportar_artefactos.py    # Pipeline de reentrenamiento y serialización offline
+├── requirements.txt          # Dependencias exactas reproducibles
+├── index.html                # Redirección raíz hacia docs/ para GitHub Pages
+└── .nojekyll                 # Configuración raíz de GitHub Pages
+```
 
 ---
 
-## 🚀 Ejecución Rápida en 1 Solo Comando
+## ⚡ Ejecución Rápida en 1 Solo Comando
 
-### 1. Aplicación Web (Sin reentrenar)
-La aplicación web utiliza directamente los modelos preentrenados almacenados en la carpeta `modelos/`:
-* **En Windows:**
+### 1. Aplicación Web Streamlit
+La aplicación interactiva utiliza directamente los modelos preentrenados de la carpeta `modelos/`:
+* **Windows:**
   ```cmd
   run_app.bat
   ```
-* **En Linux / Mac / Git Bash:**
+* **Linux / Mac:**
   ```bash
   bash run_app.sh
   ```
-  *(O directamente: `python -m streamlit run app.py`)*
+*(O directamente: `streamlit run app_streamlit/app.py`)*
 
-### 2. Entrenamiento y Regeneración de Modelos Offline (< 15 segundos)
-Para regenerar y validar todos los modelos desde los datos procesados sin requerir conexión a internet ni descargar archivos externos:
+### 2. Demostración para la Sustentación Oral (< 2 segundos)
+Cumpliendo con la exigencia de una corrida de demostración en menos de 2 minutos:
+* **Windows:**
+  ```cmd
+  run_experimento.bat
+  ```
+* **Linux / Mac:**
+  ```bash
+  bash run_experimento.sh
+  ```
+
+### 3. Modificación de Parámetros en Vivo (3 minutos)
+Para responder a peticiones del profesor durante la sustentación sin editar código fuente:
 ```cmd
+run_experimento.bat --capas 64 32 --activacion tanh --lr 0.001 --s0 650 --pdo 40
+```
+
+### 4. Reentrenar y Serializar Artefactos Offline (< 10 segundos)
+```bash
 python exportar_artefactos.py
 ```
 
 ---
 
-## ⚙️ Instalación y Entorno Reproducible
+## 🔬 Ejecución Individual de Módulos
 
-1. Clonar el repositorio:
-   ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd Trabajo02RedesNeuronales
-   ```
+* **Parte 1 (Clasificación PD, Scorecard, Interpretabilidad):**
+  ```bash
+  python parte_1/parte1.py
+  # O desde la raíz:
+  python parte1.py
+  ```
 
-2. Crear y activar un entorno virtual:
+* **Parte 2 (Regresión LGD, 30 Semillas, Pérdida Esperada):**
+  ```bash
+  python parte_2/Parte_2_Trabajo_2.py
+  # O desde la raíz:
+  python Parte_2_Trabajo_2.py
+  ```
+
+---
+
+## 🛠️ Instalación y Entorno
+
+1. Crear y activar entorno virtual:
    ```bash
    python -m venv .venv
    # Windows:
@@ -56,62 +130,14 @@ python exportar_artefactos.py
    source .venv/bin/activate
    ```
 
-3. Instalar las dependencias con versiones fijas:
+2. Instalar dependencias:
    ```bash
    pip install -r requirements.txt
    ```
 
 ---
 
-## 💾 Datos Procesados y Reproducibilidad Offline
+## 🌐 Publicación en GitHub Pages y Streamlit Community Cloud
 
-Cumpliendo con la exigencia del entregable de **no depender de APIs externas ni descargas pesadas de internet**:
-* Se incluye en el repositorio la base procesada comprimida:
-  [`datos/base_procesada_cohorte.csv.gz`](file:///D:/Estudio/NACHO/10mo%20Semestre/Redes/Entrega2/Trabajo02RedesNeuronales/datos/base_procesada_cohorte.csv.gz) (~2.19 MB).
-* **Cómo se obtuvo:**
-  * Del dataset original `loan.csv` (887,379 registros), se filtró la cohorte principal de créditos a 36 meses originados hasta diciembre de 2012 con etiqueta válida según la regla del enunciado (74,959 créditos).
-  * Se asignaron las particiones temporales congeladas:
-    * **Entrenamiento (`train`):** Junio 2007 a Diciembre 2011 (31,534 créditos).
-    * **Validación (`validation`):** Enero a Junio 2012 (14,967 créditos).
-    * **Prueba (`test`):** Julio a Diciembre 2012 (28,458 créditos).
-  * Se calcularon los atributos derivados en originación (`credit_history_years`, limpieza de `revol_util`) y se conservaron los campos financieros para $LGD$ y $EAD$.
-
----
-
-## 🎲 Semillas Aleatorias y Comparación Justa
-
-* **Semilla fija predeterminada:** `42` (utilizada para inferencia individual, preprocesamiento y modelo de referencia).
-* **Evaluación de variabilidad:** Entrenamientos independientes evaluados sobre **30 semillas consecutivas (42 a 71)** reportando Media, Desviación Estándar, Mejor y Peor desempeño en validación y prueba.
-
----
-
-## 📦 Estructura del Repositorio
-
-```text
-Trabajo02RedesNeuronales/
-├── app.py                      # Aplicación Web en Streamlit (Dark-Tech)
-├── exportar_artefactos.py      # Rutina autónoma de entrenamiento y exportación offline
-├── parte1.py                   # Script completo de la Parte 1 (PD, Scorecard, Interpretabilidad)
-├── Parte_2_Trabajo_2.py        # Script completo de la Parte 2 (LGD y Pérdida Esperada)
-├── requirements.txt            # Dependencias fijas reproducibles
-├── run_app.bat                 # Script de arranque en Windows (1 comando)
-├── run_app.sh                  # Script de arranque en Linux/Mac (1 comando)
-├── README.md                   # Documentación y guía de ejecución
-├── datos/
-│   └── base_procesada_cohorte.csv.gz # Dataset procesado offline (2.19 MB, 74,959 filas)
-└── modelos/                    # Artefactos entrenados serializados
-    ├── preprocesador.joblib    # ColumnTransformer ajustado en train
-    ├── mlp_pd.joblib           # MLPClassifier (Probabilidad de Incumplimiento)
-    ├── mlp_lgd.joblib          # MLPRegressor (LGD en [0, 1])
-    ├── referencia_percentil_train.npz # Puntajes históricos para percentiles
-    └── config_scorecard.json   # Parámetros oficiales S0=600, Odds0=20, PDO=50
-```
-
----
-
-## 🌐 Despliegue en Streamlit Community Cloud
-
-1. Sube este repositorio a **GitHub**.
-2. Ingresa a [share.streamlit.io](https://share.streamlit.io/) e inicia sesión con GitHub.
-3. Haz clic en **"New app"**, selecciona este repositorio, la rama `main` y define el archivo principal como `app.py`.
-4. Haz clic en **Deploy**. La aplicación estará disponible en línea con URL pública.
+* **GitHub Pages:** Publicado en `https://davidagr5421.github.io/Trabajo02RedesNeuronales/` (apuntando a la carpeta `docs/` o a la raíz con `.nojekyll`).
+* **Streamlit Cloud:** Compatible seleccionando `app.py` o `app_streamlit/app.py` como archivo principal.
