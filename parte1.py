@@ -3210,3 +3210,511 @@ Durante esta etapa no se realizaron nuevos entrenamientos ni ajustes de hiperpar
 
 Estas verificaciones permiten continuar con la evaluación final sobre el conjunto de prueba, manteniendo las mismas condiciones establecidas durante las tareas anteriores.
 
+## 30. Tarea 5. Evaluación final en prueba
+
+En esta etapa se evalúa el desempeño de los modelos entrenados anteriormente utilizando el conjunto de prueba temporal, conformado por 28.458 créditos financiados entre julio y diciembre de 2012.
+
+La clase positiva continúa siendo el incumplimiento (clase 1), y cada modelo produce una probabilidad estimada de pertenecer a dicha clase.
+
+Se utilizarán las siguientes métricas:
+
+- **AUC:** área bajo la curva ROC. Resume la capacidad del modelo para ordenar créditos incumplidos y no incumplidos. Un valor de 0,5 corresponde al ordenamiento aleatorio, mientras que un valor mayor indica mejor discriminación.
+- **Gini:** se calcula como `Gini = 2 × AUC − 1`.
+- **KS:** representa la máxima diferencia absoluta entre las tasas de verdaderos y falsos positivos para los distintos umbrales. Se expresa entre 0 y 1.
+- **Brier:** corresponde al error cuadrático promedio de las probabilidades estimadas. Un valor menor es mejor.
+- **BCE:** entropía cruzada binaria. Evalúa la calidad probabilística de las predicciones y mantiene el criterio utilizado durante la selección de los modelos.
+
+### 30.1. Calibración de probabilidades
+
+La curva de calibración compara la probabilidad media estimada con la frecuencia observada de incumplimiento. Para ello, los créditos se organizan en diez grupos de frecuencia aproximadamente igual, según sus probabilidades predichas.
+
+La diagonal representa una coincidencia entre las probabilidades estimadas y las frecuencias observadas.
+
+También se calculan intervalos de Wilson del 95 % para las proporciones observadas en cada grupo. Estos intervalos son individuales, no representan bandas de confianza simultáneas y no modifican las probabilidades del modelo.
+
+Debe considerarse que el indicador Brier depende tanto de la calidad de las probabilidades como de la discriminación y la prevalencia de la clase positiva. Por tanto, una reducción de Brier no demuestra por sí sola una mejor calibración.
+
+### 30.2. Evaluación de las 30 semillas
+
+Además de comparar la regresión logística con la MLP de semilla 42, se evaluarán individualmente los 30 modelos neuronales entrenados anteriormente.
+
+Para cada métrica se calcularán la media, la desviación estándar muestral y los mejores y peores valores observados.
+
+Estas diferencias describen la variabilidad asociada a las semillas aleatorias de entrenamiento. No representan intervalos de confianza del rendimiento poblacional.
+
+No se promediarán las probabilidades de las 30 redes para construir un ensamble ni se seleccionará el modelo con mejor resultado en prueba.
+
+### 30.3. Bootstrap pareado y estratificado
+
+Como análisis complementario, se calcularán intervalos percentiles del 95 % para las diferencias entre la MLP de semilla 42 y la regresión logística en las métricas AUC y Brier.
+
+Se utilizarán 300 réplicas bootstrap pareadas y estratificadas, manteniendo las cantidades de créditos de cada clase en las muestras.
+
+Una diferencia positiva de AUC favorece a la MLP, mientras que una diferencia negativa de Brier también favorece a la red neuronal.
+
+Estos intervalos corresponden a modelos previamente congelados y no incorporan toda la incertidumbre relacionada con la selección de hiperparámetros, las variaciones temporales ni el entrenamiento de nuevas muestras.
+
+**En esta etapa no se modifican los modelos, los hiperparámetros ni las transformaciones. Se realiza únicamente la evaluación final sobre el conjunto de prueba reservado.**
+"""
+
+# Métricas y calibración de prueba
+
+def metricas_test(y, p):
+
+    p = np.asarray(p, dtype=float)
+
+    assert len(y) == len(p)
+    assert np.isfinite(p).all()
+    assert ((p >= 0) & (p <= 1)).all()
+
+    fpr, tpr, _ = roc_curve(
+        y, p, drop_intermediate=False
+    )
+
+    auc = roc_auc_score(y, p)
+
+    return {
+        "AUC": float(auc),
+        "Gini": float(2 * auc - 1),
+        "KS": float(np.max(np.abs(tpr - fpr))),
+        "Brier": float(brier_score_loss(y, p)),
+        "BCE": float(log_loss(y, p, labels=[0, 1]))
+    }
+
+
+def tabla_calibracion_test(y, p):
+
+    tabla = pd.DataFrame({
+        "y": y,
+        "p": p
+    })
+
+    # Hasta diez grupos por cuantiles de probabilidad
+    tabla["bin"] = pd.qcut(
+        tabla["p"],
+        q=10,
+        duplicates="drop"
+    )
+
+    resultado = tabla.groupby(
+        "bin", observed=True
+    ).agg(
+        n=("y", "size"),
+        eventos=("y", "sum"),
+        PD_media=("p", "mean"),
+        tasa_observada=("y", "mean"),
+        PD_min=("p", "min"),
+        PD_max=("p", "max")
+    ).reset_index()
+
+    # Intervalos de Wilson del 95 %
+    n = resultado["n"].to_numpy()
+    q = resultado["tasa_observada"].to_numpy()
+    z = 1.96
+
+    denominador = 1 + z**2 / n
+
+    centro = (
+        q + z**2 / (2 * n)
+    ) / denominador
+
+    radio = (
+        z * np.sqrt(
+            q * (1 - q) / n
+            + z**2 / (4 * n**2)
+        )
+    ) / denominador
+
+    resultado["Wilson_inf"] = centro - radio
+    resultado["Wilson_sup"] = centro + radio
+
+    return resultado
+
+
+print("Funciones de evaluación definidas correctamente.")
+
+"""### Evaluación final de los modelos y estimación de incertidumbre
+
+Se utilizan los modelos congelados y el preprocesador verificado en el numeral 29 para generar las probabilidades de incumplimiento del conjunto de prueba.
+
+La **Tabla 21** compara las métricas de la regresión logística y la red neuronal correspondiente a la semilla 42.
+
+La **Tabla 22** presenta la media, desviación estándar y valores extremos de las métricas obtenidas al evaluar individualmente las 30 semillas de la MLP.
+
+La **Tabla 23** contiene las diferencias entre la MLP de semilla 42 y la regresión logística para AUC y Brier, junto con sus intervalos bootstrap percentiles del 95 %.
+
+Finalmente, la **Figura 5** presenta las curvas ROC, la calibración con intervalos de Wilson y las distribuciones de probabilidades estimadas.
+
+Los resultados se almacenarán en la carpeta de evaluación final para su posterior descarga. Esta ejecución no modifica los parámetros ni selecciona nuevamente los modelos.
+"""
+
+# Evaluación final en el conjunto de prueba
+
+def evaluar_test(d, n_boot=300):
+
+    if d.get("evaluacion_test_realizada", False):
+        raise RuntimeError(
+            "La evaluación final de test ya fue realizada."
+        )
+
+    out = d["salida"]
+    y = d["y"]["test"]
+    z = d["Z"]["test"]
+
+    # 1. Predicciones de los modelos congelados
+    p_lr = d["lr"].predict_proba(z)[:, 1]
+
+    semillas = list(d["modelos"].keys())
+
+    assert semillas == list(range(42, 72))
+
+    probabilidades = np.vstack([
+        d["modelos"][semilla].predict_proba(z)[:, 1]
+        for semilla in semillas
+    ])
+
+    # MLP de la semilla predefinida
+    p_mlp42 = probabilidades[0]
+
+    np.testing.assert_allclose(
+        p_mlp42,
+        d["red"].predict_proba(z)[:, 1],
+        atol=1e-12
+    )
+
+    # 2. Evaluación de las 30 semillas
+    filas = [
+        {
+            "semilla": semilla,
+            **metricas_test(y, p)
+        }
+        for semilla, p in zip(
+            semillas, probabilidades
+        )
+    ]
+
+    metricas_semillas = pd.DataFrame(filas)
+
+    metricas_semillas.to_csv(
+        out / "metricas_test_30_semillas.csv",
+        index=False
+    )
+
+    # Tabla 22. Resumen de las 30 semillas
+    resumen = []
+
+    for metrica in ["AUC", "Gini", "KS", "Brier", "BCE"]:
+
+        valores = metricas_semillas[metrica]
+        mayor_es_mejor = metrica in ["AUC", "Gini", "KS"]
+
+        resumen.append({
+            "metrica": metrica,
+            "media": valores.mean(),
+            "desviacion": valores.std(ddof=1),
+            "mejor": (
+                valores.max() if mayor_es_mejor
+                else valores.min()
+            ),
+            "peor": (
+                valores.min() if mayor_es_mejor
+                else valores.max()
+            )
+        })
+
+    resumen = pd.DataFrame(resumen)
+
+    resumen.to_csv(
+        out / "resumen_test_30_semillas.csv",
+        index=False
+    )
+
+    # 3. Tabla 21. Comparación principal
+    comparacion = pd.DataFrame([
+        {
+            "modelo": "Logística",
+            **metricas_test(y, p_lr)
+        },
+        {
+            "modelo": "MLP semilla 42",
+            **metricas_test(y, p_mlp42)
+        }
+    ])
+
+    comparacion.to_csv(
+        out / "comparacion_test.csv",
+        index=False
+    )
+
+    # 4. Guardar predicciones
+    ids_test = (
+        d["datos"]["test"]["id"]
+        .astype(str)
+        .to_numpy()
+    )
+
+    np.savez_compressed(
+        out / "predicciones_test_30_semillas.npz",
+        ids=ids_test,
+        y=y,
+        seeds=np.asarray(semillas),
+        probabilities=probabilidades
+    )
+
+    pd.DataFrame({
+        "id": ids_test,
+        "y": y,
+        "PD_logistica": p_lr,
+        "PD_mlp42": p_mlp42
+    }).to_csv(
+        out / "predicciones_test.csv.gz",
+        index=False,
+        compression="gzip"
+    )
+
+    # 5. Bootstrap pareado estratificado
+    rng = np.random.default_rng(2026)
+
+    ceros = np.flatnonzero(y == 0)
+    unos = np.flatnonzero(y == 1)
+
+    diferencias = []
+
+    for _ in range(n_boot):
+
+        indices = np.r_[
+            rng.choice(
+                ceros, len(ceros), replace=True
+            ),
+            rng.choice(
+                unos, len(unos), replace=True
+            )
+        ]
+
+        diferencia_auc = (
+            roc_auc_score(
+                y[indices], p_mlp42[indices]
+            )
+            - roc_auc_score(
+                y[indices], p_lr[indices]
+            )
+        )
+
+        diferencia_brier = (
+            np.mean(
+                (p_mlp42[indices] - y[indices])**2
+            )
+            - np.mean(
+                (p_lr[indices] - y[indices])**2
+            )
+        )
+
+        diferencias.append([
+            diferencia_auc,
+            diferencia_brier
+        ])
+
+    diferencias = np.asarray(diferencias)
+
+    # Tabla 23. Intervalos bootstrap
+    intervalos = pd.DataFrame([
+        {
+            "metrica": metrica,
+            "diferencia_MLP_menos_LR":
+                comparacion.loc[1, metrica]
+                - comparacion.loc[0, metrica],
+            "IC95_inf":
+                np.quantile(diferencias[:, j], 0.025),
+            "IC95_sup":
+                np.quantile(diferencias[:, j], 0.975),
+            "replicas": n_boot
+        }
+        for j, metrica in enumerate(["AUC", "Brier"])
+    ])
+
+    intervalos.to_csv(
+        out / "bootstrap_pareado_test.csv",
+        index=False
+    )
+
+    # 6. Figura 5. Diagnósticos de prueba
+    fig, axs = plt.subplots(
+        1, 3, figsize=(15, 4.3)
+    )
+
+    for nombre, p, etiqueta, color in [
+        ("Logística", p_lr, "lr", "#247c88"),
+        ("MLP semilla 42", p_mlp42, "mlp42", "#c96640")
+    ]:
+
+        # Curva ROC
+        fpr, tpr, _ = roc_curve(y, p)
+
+        axs[0].plot(
+            fpr, tpr,
+            label=nombre,
+            color=color
+        )
+
+        # Calibración e intervalos Wilson
+        tabla = tabla_calibracion_test(y, p)
+
+        tabla.to_csv(
+            out / f"calibracion_{etiqueta}.csv",
+            index=False
+        )
+
+        axs[1].errorbar(
+            tabla["PD_media"],
+            tabla["tasa_observada"],
+            yerr=[
+                tabla["tasa_observada"]
+                - tabla["Wilson_inf"],
+                tabla["Wilson_sup"]
+                - tabla["tasa_observada"]
+            ],
+            marker="o",
+            capsize=2,
+            label=nombre,
+            color=color
+        )
+
+        # Distribución de probabilidades
+        axs[2].hist(
+            p,
+            bins=40,
+            alpha=0.45,
+            label=nombre,
+            color=color
+        )
+
+    # Gráfico ROC
+    axs[0].plot(
+        [0, 1], [0, 1],
+        "k--", lw=1
+    )
+
+    axs[0].set(
+        xlabel="Tasa de falsos positivos",
+        ylabel="Sensibilidad",
+        title="ROC - prueba temporal"
+    )
+
+    # Gráfico de calibración
+    limite = max(
+        0.35,
+        float(np.quantile(p_mlp42, 0.99))
+    )
+
+    axs[1].plot(
+        [0, limite],
+        [0, limite],
+        "k--", lw=1
+    )
+
+    axs[1].set(
+        xlabel="PD media del grupo",
+        ylabel="Incumplimiento observado",
+        title="Calibración - cuantiles e IC95%"
+    )
+
+    # Distribución de probabilidades
+    axs[2].set(
+        xlabel="Probabilidad de incumplimiento",
+        ylabel="Número de créditos",
+        title="Distribución de PD - test"
+    )
+
+    for ax in axs:
+        ax.legend(fontsize=8)
+        ax.grid(alpha=0.2)
+
+    fig.suptitle(
+        "Figura 5. Evaluación final en prueba",
+        weight="bold",
+        fontsize=14
+    )
+
+    fig.tight_layout()
+
+    fig.savefig(
+        out / "figura_5_evaluacion_test.png",
+        dpi=150
+    )
+
+    plt.show()
+    plt.close(fig)
+
+    # 7. Mostrar resultados
+    print("\nTabla 21. Comparación final en test\n")
+    print(comparacion.to_string(index=False))
+
+    print("\nTabla 22. Variabilidad de las 30 semillas\n")
+    print(resumen.to_string(index=False))
+
+    print("\nTabla 23. Bootstrap pareado estratificado\n")
+    print(intervalos.to_string(index=False))
+
+    # Guardar resultados en memoria
+    d.update({
+        "p_test": p_mlp42,
+        "p_lr_test": p_lr,
+        "comparacion": comparacion,
+        "resumen": resumen,
+        "intervalos": intervalos,
+        "evaluacion_test_realizada": True
+    })
+
+    return d
+
+# Ejecutar evaluación final de la Tarea 5
+
+with threadpool_limits(limits=1):
+    datos_evaluacion = evaluar_test(
+        datos_evaluacion,
+        n_boot=300
+    )
+
+print("\nEvaluación final de prueba completada.")
+print("No se han reentrenado los modelos.")
+
+"""La evaluación final se realizó sobre 28.458 créditos del conjunto de prueba, utilizando la regresión logística y la red neuronal MLP correspondiente a la semilla 42, sin modificar sus parámetros.
+
+Los resultados muestran que la MLP obtuvo valores ligeramente mejores en las cinco métricas evaluadas. Su AUC fue de 0,625735, frente a 0,618317 de la regresión logística. Asimismo, presentó una BCE de 0,387796 y un Brier de 0,115358, inferiores a los valores del modelo de referencia.
+
+La evaluación de las 30 semillas mostró un AUC promedio de 0,622331, con una desviación estándar de 0,002756, lo que permite observar la variabilidad de los resultados según la inicialización de la red neuronal. Estas repeticiones no se utilizaron para seleccionar una nueva semilla ni para construir un ensamble.
+
+El análisis bootstrap pareado, realizado con 300 réplicas estratificadas, mostró una diferencia de AUC de 0,007418 a favor de la MLP, con un intervalo del 95 % entre 0,003167 y 0,012066. En cambio, para Brier el intervalo incluyó el valor cero, por lo que no se identifica una ventaja igualmente clara en esta métrica.
+
+La Figura 5 muestra curvas ROC similares para ambos modelos, con una ligera ventaja de la MLP. Las curvas de calibración presentan diferencias entre las probabilidades estimadas y las frecuencias observadas en algunos grupos, mientras que las distribuciones muestran que gran parte de las probabilidades se concentra en valores relativamente bajos.
+
+En conjunto, la MLP presenta un mejor desempeño observado, pero su capacidad de discriminación continúa siendo limitada. Los resultados corresponden a una evaluación histórica sobre créditos otorgados y no demuestran que los modelos tengan el mismo comportamiento en solicitudes actuales.
+"""
+
+# Interpretación de los resultados de prueba
+
+# Reutilizar resultados del numeral 30
+tasa_observada = datos_evaluacion["y"]["test"].mean()
+pd_logistica = datos_evaluacion["p_lr_test"].mean()
+pd_mlp42 = datos_evaluacion["p_test"].mean()
+
+# Recuperar métricas calculadas
+comparacion = datos_evaluacion["comparacion"].set_index("modelo")
+
+lr = comparacion.loc["Logística"]
+mlp = comparacion.loc["MLP semilla 42"]
+
+print("LECTURA DE RESULTADOS\n")
+
+print(f"Tasa observada de test: {tasa_observada:.2%}")
+print(f"PD media logística: {pd_logistica:.2%}")
+print(f"PD media MLP42: {pd_mlp42:.2%}")
+
+"""En el conjunto de prueba, la proporción observada de créditos de clase 1 fue del 13,61 %. Por su parte, la regresión logística estimó una probabilidad media del 12,12 %, mientras que la red neuronal MLP de semilla 42 obtuvo una probabilidad media del 12,60 %.
+
+Estos resultados muestran que ambos modelos subestiman la frecuencia agregada de incumplimiento, con diferencias aproximadas de 1,49 y 1,01 puntos porcentuales, respectivamente.
+
+La MLP presenta una estimación promedio más cercana a la frecuencia observada y obtiene mejores valores puntuales de AUC y Brier. Sin embargo, las diferencias entre ambos modelos son pequeñas y la calibración debe analizarse también por grupos de probabilidad.
+
+Por último, la capacidad discriminativa continúa siendo limitada. Por esta razón, los resultados no justifican utilizar directamente las probabilidades estimadas para tomar decisiones automáticas de aprobación de créditos sin realizar validaciones adicionales.
+
