@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Informe técnico sobre redes neuronales, scorecard y riesgo de crédito en Lending Club.">
-  <title>Redes neuronales para riesgo de crédito | Cuaderno técnico</title>
+  <meta name="description" content="¿Me prestas? — Informe técnico sobre redes neuronales, scorecard y riesgo de crédito en Lending Club.">
+  <title>¿Me prestas? · Scoring Crediticio y Redes Neuronales | Informe Técnico</title>
   <link rel="stylesheet" href="assets/blog.css">
 </head>
 <body>
   <header id="top" class="masthead"><div class="masthead-inner">
-    <a class="brand" href="./">CUADERNO TÉCNICO <span>/ REDES NEURONALES</span></a>
-    <nav aria-label="Navegación principal"><a href="blog/">Blog</a><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Repositorio ↗</a></nav>
+    <a class="brand" href="./">¿ME PRESTAS? <span>/ SCORING CREDITICIO</span></a>
+    <nav aria-label="Navegación principal"><a href="blog/">Blog</a><a href="https://trabajo02redesneuronales.streamlit.app" target="_blank">App Web ↗</a><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Repositorio ↗</a></nav>
   </div></header>
   <main class="page-layout">
     <aside class="contents" aria-label="Contenido del informe">
@@ -20,11 +20,12 @@
     </aside>
     <article class="article">
       <header class="article-heading">
-        <p class="kicker">INVESTIGACIÓN APLICADA · RIESGO DE CRÉDITO · 27 OCT 2026</p>
-        <h1>Redes neuronales para la estimación del riesgo de crédito</h1>
-        <p class="dek">Comparación de regresión logística y perceptrón multicapa sobre créditos de Lending Club: probabilidad de incumplimiento, scorecard, interpretabilidad y pérdida dado incumplimiento.</p>
+        <p class="kicker">PLATAFORMA FINTECH · INVESTIGACIÓN APLICADA · 27 OCT 2026</p>
+        <h1 class="brand-title">¿Me prestas?</h1>
+        <h2 class="sub-title">Scoring Crediticio y Redes Neuronales para la Estimación del Riesgo de Crédito</h2>
+        <p class="dek">Comparación de regresión logística y perceptrón multicapa sobre créditos de Lending Club: probabilidad de incumplimiento (PD), scorecard calibrada a 600 puntos, interpretabilidad y pérdida dado incumplimiento (LGD).</p>
         <div class="byline"><span>Alejandro Agudelo Anaya · David Agudelo Arboleda · Santiago Álvarez Martínez · Daniel Felipe López Zapata · Sara Osorio Piñerez</span><span>Redes Neuronales y Algoritmos Bioinspirados · Universidad Nacional de Colombia, Facultad de Minas</span></div>
-        <div class="article-tools"><a class="button button-dark" href="Trabajo%202%20(1).pdf" download>Descargar PDF original</a><a class="button button-light" href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Código del proyecto ↗</a></div>
+        <div class="article-tools"><a class="button button-dark" href="https://trabajo02redesneuronales.streamlit.app" target="_blank">Probar App ¿Me prestas? ↗</a><a class="button button-light" href="Trabajo%202%20(1).pdf" download>Descargar PDF original</a><a class="button button-light" href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Código del proyecto ↗</a></div>
       </header>
       <section id="resumen" class="abstract"><p class="section-label">RESUMEN</p>
         <p>Se estima la probabilidad de incumplimiento (PD) de créditos de Lending Club a 36 meses originados entre 2007 y 2012, comparando una regresión logística (referencia) con un perceptrón multicapa (MLP) bajo particiones temporales, preprocesamiento común y presupuesto de búsqueda explícito. En la prueba temporal (28.458 créditos), el MLP de semilla 42 obtuvo AUC de 0,6257 frente a 0,6183 de la logística; el promedio de 30 semillas fue 0,6223 (DE = 0,0028). La ventaja es pequeña, la discriminación es limitada y las probabilidades subestiman la prevalencia observada (12,6 % frente a 13,6 %). El modelo se expresa como scorecard (600 puntos con odds 20:1 y PDO = 50) y se interpreta con importancia por permutación, escenarios marginales y una aproximación de Shapley.</p><p><strong>Palabras clave:</strong> riesgo de crédito, scorecard, redes neuronales, datos tabulares, calibración.</p>
@@ -93,7 +94,7 @@ abla_w J = rac{1}{n}X^T(p - y) + rac{w}{nC}$. El intercepto no se penaliza y v
         <p class="table-source"><em>Fuente:</em> Elaboración propia a partir de 30 corridas independientes del MLP en el conjunto de prueba temporal (Wilson, 1927). Nótese que la semilla 42 se sitúa cerca del mejor desempeño; la media de AUC (0,6223) se mantiene por encima de la logística, aunque con un caso desfavorable (0,6154) inferior a la referencia lineal.</p>
         <figure><img src="assets/figura-3-diagnosticos.png" alt="Figura 3. Curvas ROC, calibración y distribución de scores"><figcaption>Figura 3. Diagnósticos en prueba: curva ROC, calibración con intervalos de Wilson al 95 % (Wilson, 1927) y distribución del puntaje crediticio.</figcaption></figure>
       </section>
-      <section id="scorecard"><p class="section-label">08 / ESCALA</p><h2>Scorecard</h2>
+      <section id="scorecard"><p class="section-label">08 / ESCALA</p><h2>¿Me prestas? · Scorecard y Calibración de Puntaje</h2>
         <p>Se adoptó la parametrización canónica de scorecards bancarias de la industria (Siddiqi, 2017) con puntaje base $S_0 = 600$ para unas odds de 20:1 y $	ext{PDO} = 50$ puntos para duplicar las odds. La transformación analítica es monótona decreciente en la probabilidad de impago $p$: a mayor puntaje, menor riesgo.</p>
         <table><caption>Tabla 8. Equivalencia entre probabilidad de incumplimiento (PD), odds y puntaje de la Scorecard</caption><thead><tr><th>PD Predicha</th><th>Odds (buenos : malos)</th><th>Puntaje Scorecard</th><th>Interpretación de Negocio</th></tr></thead><tbody><tr><td>1,00 %</td><td>99,00 : 1</td><td>715,3 pts</td><td>Excelente solvencia / Riesgo muy bajo</td></tr><tr><td>4,76 % (1/21)</td><td>20,00 : 1</td><td>600,0 pts</td><td>Punto base de referencia oficial</td></tr><tr><td>10,00 %</td><td>9,00 : 1</td><td>542,4 pts</td><td>Riesgo moderado</td></tr><tr><td>13,61 % (prevalencia)</td><td>6,35 : 1</td><td>517,2 pts</td><td>Puntaje medio de la población</td></tr><tr><td>20,00 %</td><td>4,00 : 1</td><td>483,9 pts</td><td>Riesgo elevado</td></tr><tr><td>50,00 %</td><td>1,00 : 1</td><td>383,9 pts</td><td>Odds neutras (Offset base)</td></tr></tbody></table>
         <p class="table-source"><em>Fuente:</em> Elaboración propia basada en la derivación analítica de Scorecards crediticias (Siddiqi, 2017) con escala $S = 383.9036 + 72.1348 \ln((1-p)/p)$. El percentil poblacional individual se calcula mediante búsqueda binaria sobre la distribución congelada de entrenamiento (31.534 créditos).</p>
@@ -235,7 +236,7 @@ abla_w J = rac{1}{n}X^T(p - y) + rac{w}{nC}$. El intercepto no se penaliza y v
           <div class="finding-field"><strong>6. Lección aprendida:</strong> Desconfiar de generalizaciones absolutas emitidas por IAs sobre la superioridad de arquitecturas profundas. Toda afirmación sobre rendimiento algorítmico debe validarse mediante una regla de comparación justa, presupuestos de búsqueda explícitos y análisis de variabilidad estadística entre corridas independientes.</div>
         </div>
       </section>
-      <section id="enlaces"><p class="section-label">14 / RECURSOS</p><h2>Enlaces</h2><ul><li>Repositorio Git: <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Trabajo02RedesNeuronales</a>.</li><li>Aplicación web: <a href="https://trabajo02redesneuronales.streamlit.app">Scoring crediticio en Streamlit</a>.</li><li>Video promocional: el documento indica “[completar]”.</li><li><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_1">Código Parte 1</a>, <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_2">código Parte 2</a> y <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/app_streamlit">aplicación interactiva</a>.</li></ul></section>
+      <section id="enlaces"><p class="section-label">14 / RECURSOS</p><h2>Enlaces</h2><ul><li>Repositorio Git: <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Trabajo02RedesNeuronales</a>.</li><li>Aplicación web: <a href="https://trabajo02redesneuronales.streamlit.app" target="_blank">¿Me prestas? · Scoring crediticio en Streamlit</a>.</li><li>Video promocional: el documento indica “[completar]”.</li><li><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_1">Código Parte 1</a>, <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_2">código Parte 2</a> y <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/app_streamlit">aplicación interactiva</a>.</li></ul></section>
       <section id="referencias"><p class="section-label">BIBLIOGRAFÍA</p><h2>Referencias</h2><ol class="references">
         <li>Basel Committee on Banking Supervision. (2006). <em>International convergence of capital measurement and capital standards: A revised framework (comprehensive version)</em>. Bank for International Settlements. <a href="https://www.bis.org/publ/bcbs128.pdf">https://www.bis.org/publ/bcbs128.pdf</a></li>
         <li>Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. <em>Monthly Weather Review, 78</em>(1), 1–3. <a href="https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2">DOI</a></li>

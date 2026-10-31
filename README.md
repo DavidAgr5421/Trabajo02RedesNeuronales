@@ -24,7 +24,7 @@ Trabajo02RedesNeuronales/
 │   └── README.md             # Justificación matemática y evaluación
 │
 ├── app_streamlit/            # APLICACIÓN WEB INTERACTIVA (STREAMLIT)
-│   ├── app.py                # Interfaz UI/UX Dark-Tech (Vino Tinto / Crimson)
+│   ├── app.py                # Interfaz UI/UX Dark-Tech ¿Me prestas? (Paleta Verde Esmeralda)
 │   └── README.md             # Documentación de inferencia y simulación
 │
 ├── sustentacion/             # MÓDULO DE SUSTENTACIÓN ORAL

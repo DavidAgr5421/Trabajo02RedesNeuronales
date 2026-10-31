@@ -3,7 +3,7 @@
 ================================================================================
 APLICACIÓN WEB: ¿ME PRESTAS? — MOTOR DE EVALUACIÓN PD & SCORECARD
 ================================================================================
-Diseño UI/UX Dark-Tech · Atmósfera Vino Tinto & Rojo Pizarra con Gradientes
+Diseño UI/UX Dark-Tech · Atmósfera Verde Esmeralda & Pizarra con Gradientes
 Textos en Español para Destino, Vivienda y Antigüedad Laboral
 Semestre 2026-02 · Redes Neuronales y Algoritmos Bioinspirados
 Universidad Nacional de Colombia - Facultad de Minas
@@ -20,46 +20,46 @@ import streamlit as st
 import plotly.graph_objects as go
 
 # ------------------------------------------------------------------------------
-# 1. CONFIGURACIÓN DE PÁGINA Y SISTEMA DE DISEÑO DARK-TECH VINO TINTO
+# 1. CONFIGURACIÓN DE PÁGINA Y SISTEMA DE DISEÑO DARK-TECH ESMERALDA
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Scoring Crediticio · Motor de Evaluación PD & Scorecard",
-    page_icon="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/shield.svg",
+    page_title="¿Me prestas? · Scoring Crediticio & Scorecard",
+    page_icon="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/shield-check.svg",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Inyección de estilos CSS - Atmósfera Vino Tinto / Crimson Profundo y Gradientes
+# Inyección de estilos CSS - Atmósfera Verde Esmeralda / Bosque Profundo y Gradientes
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
     :root {
-        --bg-main: #0B0D11;
-        --bg-surface: #151820;
-        --bg-surface-elevated: #1B1E28;
-        --bg-input: #12141B;
-        --border-subtle: #2A2F3A;
-        --border-wine: rgba(136, 19, 35, 0.38);
-        --border-wine-hover: rgba(185, 28, 50, 0.6);
-        --text-primary: #F8FAFC;
+        --bg-main: #070B09;
+        --bg-surface: #0E1612;
+        --bg-surface-elevated: #14201B;
+        --bg-input: #0A110E;
+        --border-subtle: #192D24;
+        --border-wine: rgba(16, 185, 129, 0.35);
+        --border-wine-hover: rgba(52, 211, 153, 0.65);
+        --text-primary: #F0FDF4;
         --text-secondary: #94A3B8;
         --text-muted: #64748B;
-        --wine-deep: #4A0E17;
-        --wine-glow: rgba(136, 19, 35, 0.22);
-        --crimson-accent: #EF4444;
-        --crimson-button: #DC2626;
+        --wine-deep: #064E3B;
+        --wine-glow: rgba(16, 185, 129, 0.22);
+        --crimson-accent: #10B981;
+        --crimson-button: #059669;
         --cyan-electric: #00D2FF;
         --emerald-tech: #10B981;
         --amber-warning: #F59E0B;
     }
 
-    /* Fondo principal del lienzo con gradiente radial vino tinto sutil */
+    /* Fondo principal del lienzo con gradiente radial verde esmeralda sutil */
     html, body, [data-testid="stAppViewContainer"], .main {
         background-color: var(--bg-main) !important;
         background-image: 
-            radial-gradient(circle at 88% 8%, rgba(88, 14, 25, 0.25) 0%, rgba(35, 7, 13, 0.12) 42%, transparent 75%),
-            radial-gradient(circle at 12% 90%, rgba(65, 10, 18, 0.18) 0%, transparent 60%) !important;
+            radial-gradient(circle at 88% 8%, rgba(6, 95, 70, 0.28) 0%, rgba(4, 47, 46, 0.14) 42%, transparent 75%),
+            radial-gradient(circle at 12% 90%, rgba(5, 150, 105, 0.16) 0%, transparent 60%) !important;
         background-attachment: fixed !important;
         color: var(--text-primary) !important;
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
@@ -70,12 +70,12 @@ st.markdown("""
     }
 
     /* ==========================================================================
-       1. PANEL LATERAL (SIDEBAR): GRADIENTE VINO TINTO PROFUNDO -> PIZARRA
+       1. PANEL LATERAL (SIDEBAR): GRADIENTE VERDE BOSQUE PROFUNDO -> PIZARRA
        ========================================================================== */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #130C12 0%, #1B1118 45%, #141720 100%) !important;
+        background: linear-gradient(180deg, #07100D 0%, #0C1A15 45%, #0B1317 100%) !important;
         border-right: 1px solid var(--border-wine) !important;
-        box-shadow: 6px 0 28px rgba(18, 2, 6, 0.55) !important;
+        box-shadow: 6px 0 28px rgba(2, 18, 12, 0.55) !important;
     }
     [data-testid="stSidebar"] > div:first-child {
         background: transparent !important;
@@ -85,24 +85,46 @@ st.markdown("""
         padding-bottom: 4px;
         margin-bottom: 18px;
     }
-    .sidebar-main-title {
-        font-size: 1.25rem;
+    .sidebar-brand-pill {
+        display: inline-block;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
+        letter-spacing: 0.12em;
+        color: #6EE7B7;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+    .sidebar-app-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #6EE7B7;
+        margin: 0 0 2px 0;
+        line-height: 1.15;
+    }
+    .sidebar-main-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
         color: #FFFFFF;
         margin: 0;
-        line-height: 1.2;
+        line-height: 1.25;
     }
     .sidebar-main-subtitle {
-        font-size: 0.78rem;
-        color: #A38B95;
+        font-size: 0.76rem;
+        color: #86EFAC;
         margin-top: 4px;
         display: block;
         font-family: 'JetBrains Mono', monospace;
     }
 
     /* ==========================================================================
-       2. ENCABEZADOS DE SECCIÓN: VINO TINTO / ROJO PROFUNDO
+       2. ENCABEZADOS DE SECCIÓN: VERDE ESMERALDA / BOSQUE PROFUNDO
        ========================================================================== */
     [data-testid="stSidebar"] [data-testid="stExpander"] {
         background-color: transparent !important;
@@ -110,33 +132,33 @@ st.markdown("""
         margin-bottom: 12px !important;
     }
     [data-testid="stSidebar"] [data-testid="stExpander"] > details {
-        border: 1px solid rgba(160, 26, 45, 0.42) !important;
+        border: 1px solid rgba(16, 185, 129, 0.35) !important;
         border-radius: 12px !important;
         overflow: hidden !important;
-        background: rgba(18, 15, 22, 0.92) !important;
-        box-shadow: 0 4px 14px rgba(28, 4, 8, 0.3) !important;
+        background: rgba(11, 20, 16, 0.94) !important;
+        box-shadow: 0 4px 14px rgba(4, 28, 18, 0.3) !important;
     }
     [data-testid="stSidebar"] [data-testid="stExpander"] > details > summary {
-        background: linear-gradient(90deg, rgba(74, 14, 24, 0.88) 0%, rgba(48, 8, 15, 0.78) 100%) !important;
-        border-bottom: 1px solid rgba(160, 26, 45, 0.35) !important;
+        background: linear-gradient(90deg, rgba(6, 78, 59, 0.88) 0%, rgba(4, 47, 46, 0.78) 100%) !important;
+        border-bottom: 1px solid rgba(16, 185, 129, 0.3) !important;
         padding: 10px 14px !important;
-        color: #FEE2E2 !important;
+        color: #ECFDF5 !important;
         font-weight: 700 !important;
         font-size: 0.86rem !important;
         letter-spacing: 0.02em !important;
         transition: all 0.15s ease !important;
     }
     [data-testid="stSidebar"] [data-testid="stExpander"] > details > summary:hover {
-        background: linear-gradient(90deg, rgba(95, 18, 30, 0.95) 0%, rgba(62, 10, 20, 0.88) 100%) !important;
+        background: linear-gradient(90deg, rgba(5, 150, 105, 0.95) 0%, rgba(6, 95, 70, 0.88) 100%) !important;
         color: #FFFFFF !important;
     }
     [data-testid="stSidebar"] [data-testid="stExpander"] > details > summary svg {
-        color: #FCA5A5 !important;
-        fill: #FCA5A5 !important;
+        color: #6EE7B7 !important;
+        fill: #6EE7B7 !important;
     }
     [data-testid="stSidebar"] [data-testid="stExpander"] > details > div[data-testid="stExpanderDetails"] {
         padding: 14px 14px 8px 14px !important;
-        background-color: rgba(18, 16, 23, 0.95) !important;
+        background-color: rgba(10, 19, 15, 0.95) !important;
     }
 
     /* ==========================================================================
@@ -145,8 +167,8 @@ st.markdown("""
     [data-testid="stSidebar"] .stNumberInput input,
     [data-testid="stSidebar"] .stTextInput input,
     [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] {
-        background-color: rgba(16, 17, 24, 0.95) !important;
-        border: 1px solid rgba(85, 30, 42, 0.6) !important;
+        background-color: rgba(9, 17, 14, 0.95) !important;
+        border: 1px solid rgba(16, 185, 129, 0.35) !important;
         color: #FFFFFF !important;
         font-family: 'JetBrains Mono', monospace !important;
         font-size: 0.84rem !important;
@@ -154,25 +176,25 @@ st.markdown("""
     }
     [data-testid="stSidebar"] .stNumberInput input:focus,
     [data-testid="stSidebar"] .stTextInput input:focus {
-        border-color: #EF4444 !important;
-        box-shadow: 0 0 0 1px #EF4444 !important;
+        border-color: #10B981 !important;
+        box-shadow: 0 0 0 1px #10B981 !important;
     }
 
     /* ==========================================================================
-       4. BOTÓN DE ACCIÓN PRINCIPAL (ROJO CARMESÍ / VINO TINTO BRILLANTE)
+       4. BOTÓN DE ACCIÓN PRINCIPAL (VERDE ESMERALDA / BOSQUE BRILLANTE)
        ========================================================================== */
     [data-testid="stSidebar"] div.stButton > button {
-        background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%) !important;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
         color: #FFFFFF !important;
         font-family: 'JetBrains Mono', monospace !important;
         font-weight: 700 !important;
         font-size: 0.86rem !important;
         letter-spacing: 0.04em !important;
-        border: 1px solid #B91C1C !important;
+        border: 1px solid #10B981 !important;
         border-radius: 12px !important;
         padding: 13px 20px !important;
         width: 100% !important;
-        box-shadow: 0 6px 22px rgba(153, 27, 27, 0.45) !important;
+        box-shadow: 0 6px 22px rgba(5, 150, 105, 0.45) !important;
         transition: all 0.15s ease-in-out !important;
         display: flex !important;
         align-items: center !important;
@@ -180,14 +202,14 @@ st.markdown("""
         margin-top: 14px !important;
     }
     [data-testid="stSidebar"] div.stButton > button:hover {
-        background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%) !important;
-        box-shadow: 0 8px 28px rgba(220, 38, 38, 0.55) !important;
-        border-color: #EF4444 !important;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+        box-shadow: 0 8px 28px rgba(16, 185, 129, 0.6) !important;
+        border-color: #34D399 !important;
         transform: translateY(-1px) !important;
     }
 
     /* ==========================================================================
-       5. LIENZO PRINCIPAL: TARJETAS CON SUTIL GRADIENTE Y BORDE VINO TINTO
+       5. LIENZO PRINCIPAL: TARJETAS CON SUTIL GRADIENTE Y BORDE VERDE ESMERALDA
        ========================================================================== */
     .top-navbar {
         display: flex;
@@ -197,11 +219,33 @@ st.markdown("""
         border-bottom: 1px solid var(--border-wine);
         margin-bottom: 20px;
     }
+    .app-brand-badge {
+        display: inline-block;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        color: #6EE7B7;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+    .header-main-title {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #6EE7B7;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin: 0 0 4px 0;
+    }
     .header-title {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: #FFFFFF;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
         margin: 0 0 4px 0;
     }
     .header-subtitle {
@@ -218,7 +262,7 @@ st.markdown("""
         font-size: 0.72rem;
         font-weight: 500;
         color: var(--text-secondary);
-        background: linear-gradient(145deg, #161821 0%, #1A1319 100%);
+        background: linear-gradient(145deg, #0F1714 0%, #13221C 100%);
         border: 1px solid var(--border-wine);
         padding: 6px 12px;
         border-radius: 8px;
@@ -229,9 +273,9 @@ st.markdown("""
         transition: all 0.15s ease;
     }
     .nav-btn:hover {
-        color: var(--text-primary);
+        color: #FFFFFF;
         border-color: var(--border-wine-hover);
-        background: #201720;
+        background: #14251E;
         text-decoration: none;
     }
     .nav-btn svg {
@@ -240,13 +284,13 @@ st.markdown("""
         stroke: currentColor;
     }
 
-    /* Tarjetas KPI con Gradiente Pizarra-Vino Tinto */
+    /* Tarjetas KPI con Gradiente Pizarra-Verde Esmeralda */
     .kpi-card {
-        background: linear-gradient(145deg, #151821 0%, #1C121A 100%);
+        background: linear-gradient(145deg, #0F1714 0%, #14231D 100%);
         border: 1px solid var(--border-wine);
         border-radius: 16px;
         padding: 20px 22px;
-        box-shadow: 0 4px 18px rgba(18, 3, 7, 0.4);
+        box-shadow: 0 4px 18px rgba(4, 25, 17, 0.4);
         transition: border-color 0.2s ease, transform 0.2s ease;
     }
     .kpi-card:hover {
@@ -282,18 +326,18 @@ st.markdown("""
 
     /* Estado de espera / Empty State con resplandor sutil */
     .empty-state-panel {
-        background: linear-gradient(145deg, #141720 0%, #1C1219 100%);
+        background: linear-gradient(145deg, #0E1612 0%, #13221B 100%);
         border: 1px dashed var(--border-wine);
         border-radius: 16px;
         padding: 56px 32px;
         text-align: center;
         margin-top: 10px;
-        box-shadow: 0 8px 30px rgba(25, 4, 9, 0.45);
+        box-shadow: 0 8px 30px rgba(4, 25, 17, 0.45);
     }
     .empty-state-icon {
         width: 44px;
         height: 44px;
-        stroke: #EF4444;
+        stroke: #10B981;
         margin: 0 auto 16px;
         display: block;
         opacity: 0.9;
@@ -314,12 +358,12 @@ st.markdown("""
 
     /* Panel de Diagnóstico con Acento Lateral */
     .diagnosis-container {
-        background: linear-gradient(145deg, #151821 0%, #1C121A 100%);
+        background: linear-gradient(145deg, #0F1714 0%, #14231D 100%);
         border: 1px solid var(--border-wine);
         border-radius: 12px;
         padding: 20px 24px;
         margin-top: 20px;
-        box-shadow: 0 4px 18px rgba(18, 3, 7, 0.4);
+        box-shadow: 0 4px 18px rgba(4, 25, 17, 0.4);
     }
     .diagnosis-header {
         font-family: 'JetBrains Mono', monospace;
@@ -338,10 +382,10 @@ st.markdown("""
         color: var(--text-secondary);
     }
 
-    /* Tabs Segmentados con Borde Vino Tinto */
+    /* Tabs Segmentados con Borde Verde Esmeralda */
     .stTabs [data-baseweb="tab-list"] {
         gap: 6px;
-        background: rgba(18, 20, 28, 0.9) !important;
+        background: rgba(11, 20, 16, 0.9) !important;
         border: 1px solid var(--border-wine) !important;
         border-radius: 12px !important;
         padding: 4px !important;
@@ -360,8 +404,8 @@ st.markdown("""
     }
     .stTabs [aria-selected="true"] {
         color: #FFFFFF !important;
-        background: linear-gradient(135deg, rgba(74, 14, 24, 0.7) 0%, rgba(35, 7, 13, 0.9) 100%) !important;
-        border: 1px solid rgba(220, 38, 38, 0.45) !important;
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(4, 47, 46, 0.95) 100%) !important;
+        border: 1px solid rgba(16, 185, 129, 0.5) !important;
     }
 
     .percentile-track {
@@ -491,6 +535,8 @@ if "ejecutado" not in st.session_state:
 st.markdown("""
 <div class="top-navbar">
     <div>
+        <div class="app-brand-badge">PLATAFORMA FINTECH INTELIGENTE</div>
+        <h1 class="header-main-title">¿Me prestas?</h1>
         <div class="header-title">Scoring Crediticio · Motor de Evaluación PD & Scorecard</div>
         <div class="header-subtitle">Modelo de Redes Neuronales Artificiales (MLP) · Lending Club Dataset</div>
     </div>
@@ -516,6 +562,8 @@ st.markdown("""
 # ------------------------------------------------------------------------------
 st.sidebar.markdown("""
 <div class="sidebar-header-box">
+    <div class="sidebar-brand-pill">PLATAFORMA FINTECH</div>
+    <div class="sidebar-app-title">¿Me prestas?</div>
     <div class="sidebar-main-title">Parámetros del Solicitante</div>
     <span class="sidebar-main-subtitle">Configura los atributos contractuales y crediticios</span>
 </div>
@@ -581,7 +629,7 @@ with st.sidebar.expander("03. Historial Crediticio", expanded=False):
     open_acc = st.number_input("Cuentas de crédito abiertas:", min_value=1, max_value=50, value=int(def_open))
     total_acc = st.number_input("Total de cuentas históricas:", min_value=1, max_value=100, value=int(def_total))
 
-# Botón Principal CTA: "Calcular Riesgo Crediticio" (Rojo Carmesí / Vino Tinto)
+# Botón Principal CTA: "Calcular Riesgo Crediticio" (Verde Esmeralda Tech)
 btn_evaluar = st.sidebar.button("Calcular Riesgo Crediticio")
 
 if btn_evaluar:
@@ -740,13 +788,13 @@ with tab_diag:
             mode="gauge+number",
             value=score_actual,
             number={'suffix': " pts", 'font': {'size': 34, 'family': "JetBrains Mono, monospace", 'color': "#FFFFFF"}},
-            title={'text': "<span style='font-family: JetBrains Mono; font-size:0.75rem; color:#A38B95; letter-spacing:0.08em;'>ESCALA DE CALIFICACIÓN (350 - 750 PTS)</span>"},
+            title={'text': "<span style='font-family: JetBrains Mono; font-size:0.75rem; color:#94A3B8; letter-spacing:0.08em;'>ESCALA DE CALIFICACIÓN (350 - 750 PTS)</span>"},
             gauge={
-                'axis': {'range': [350, 750], 'tickwidth': 1, 'tickcolor': "#4A1A24", 'tickfont': {'color': "#8A7480", 'family': "JetBrains Mono", 'size': 10}},
+                'axis': {'range': [350, 750], 'tickwidth': 1, 'tickcolor': "#1E3A2F", 'tickfont': {'color': "#94A3B8", 'family': "JetBrains Mono", 'size': 10}},
                 'bar': {'color': dictamen_color, 'thickness': 0.28},
                 'bgcolor': "#141720",
                 'borderwidth': 1,
-                'bordercolor': "rgba(136, 19, 35, 0.35)",
+                'bordercolor': "rgba(16, 185, 129, 0.35)",
                 'steps': [
                     {'range': [350, 520], 'color': 'rgba(220, 38, 38, 0.25)'},
                     {'range': [520, 620], 'color': 'rgba(245, 158, 11, 0.25)'},
@@ -779,7 +827,7 @@ with tab_diag:
             <div class="diagnosis-body">
                 {dictamen_prosa}
             </div>
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(136, 19, 35, 0.35); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #8A7480;">
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(16, 185, 129, 0.25); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #94A3B8;">
                 STATUS: <span style="color: {dictamen_color}; font-weight: 700;">{dictamen_texto.upper()}</span>
             </div>
         </div>
@@ -788,10 +836,10 @@ with tab_diag:
 # --- TAB 2: SIMULADOR WHAT-IF ---
 with tab_whatif:
     st.markdown("""
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #FCA5A5; text-transform: uppercase; margin-bottom: 4px;">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #6EE7B7; text-transform: uppercase; margin-bottom: 4px;">
         ANÁLISIS DE SENSIBILIDAD DINÁMICO
     </div>
-    <div style="font-size: 0.85rem; color: #8A7480; margin-bottom: 20px;">
+    <div style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 20px;">
         Modifica variables financieras accionables para cuantificar el efecto marginal sobre la probabilidad de impago y el puntaje.
     </div>
     """, unsafe_allow_html=True)
@@ -868,7 +916,7 @@ with tab_whatif:
             x=[score_actual, percentil_actual],
             name="Estado Base",
             orientation='h',
-            marker=dict(color='#26202B', line=dict(color='rgba(136, 19, 35, 0.45)', width=1))
+            marker=dict(color='#11221B', line=dict(color='rgba(16, 185, 129, 0.35)', width=1))
         ))
         fig_barras.add_trace(go.Bar(
             y=["Puntaje Score", "Percentil (%)"],
@@ -883,7 +931,7 @@ with tab_whatif:
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(family="JetBrains Mono, monospace", color="#94A3B8", size=10),
-            xaxis=dict(showgrid=True, gridcolor="#2A1620"),
+            xaxis=dict(showgrid=True, gridcolor="#162E24"),
             yaxis=dict(showgrid=False),
             margin=dict(l=10, r=10, t=10, b=10),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
@@ -893,10 +941,10 @@ with tab_whatif:
 # --- TAB 3: UBICACIÓN POBLACIONAL ---
 with tab_pop:
     st.markdown(f"""
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #FCA5A5; text-transform: uppercase; margin-bottom: 4px;">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #6EE7B7; text-transform: uppercase; margin-bottom: 4px;">
         DISTRIBUCIÓN HISTÓRICA DEL PORTAFOLIO ({len(scores_referencia):,} CRÉDITOS EN ENTRENAMIENTO)
     </div>
-    <div style="font-size: 0.85rem; color: #8A7480; margin-bottom: 20px;">
+    <div style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 20px;">
         Curva de densidad probabilística de la base Lending Club. Ubicación del solicitante marcada en <span style="color:{dictamen_color}; font-weight:700;">{score_actual:.1f} pts (Percentil {percentil_actual:.1f}%)</span>.
     </div>
     """, unsafe_allow_html=True)
@@ -928,8 +976,8 @@ with tab_pop:
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="JetBrains Mono, monospace", color="#94A3B8", size=10),
-        xaxis=dict(title="Puntaje Scorecard (pts)", showgrid=True, gridcolor="#2A1620", zeroline=False),
-        yaxis=dict(title="Densidad", showgrid=True, gridcolor="#2A1620", zeroline=False),
+        xaxis=dict(title="Puntaje Scorecard (pts)", showgrid=True, gridcolor="#162E24", zeroline=False),
+        yaxis=dict(title="Densidad", showgrid=True, gridcolor="#162E24", zeroline=False),
         height=350,
         margin=dict(l=20, r=20, t=20, b=20),
         hovermode="x unified"
@@ -944,7 +992,7 @@ with tab_pop:
 # --- TAB 4: METODOLOGÍA DEL MODELO ---
 with tab_spec:
     st.markdown("""
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #FCA5A5; text-transform: uppercase; margin-bottom: 12px;">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #6EE7B7; text-transform: uppercase; margin-bottom: 12px;">
         FORMULACIÓN MATEMÁTICA Y ESPECIFICACIÓN DE MODELOS
     </div>
     """, unsafe_allow_html=True)
@@ -998,8 +1046,8 @@ with tab_spec:
 # ------------------------------------------------------------------------------
 st.markdown("<br><hr style='border: none; border-top: 1px solid var(--border-wine); margin: 30px 0 16px;'><br>", unsafe_allow_html=True)
 st.markdown("""
-<div style="display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #8A7480;">
+<div style="display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #94A3B8;">
     <div>UNIVERSIDAD NACIONAL DE COLOMBIA · REDES NEURONALES 2026-02</div>
-    <div>SISTEMA DE INFERENCIA EN TIEMPO REAL · SCORING TABULAR</div>
+    <div>¿ME PRESTAS? · SISTEMA DE INFERENCIA EN TIEMPO REAL</div>
 </div>
 """, unsafe_allow_html=True)

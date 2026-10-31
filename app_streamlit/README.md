@@ -1,6 +1,6 @@
-# Aplicación Web: Motor de Scoring Crediticio (Streamlit)
+# Aplicación Web: ¿Me prestas? — Motor de Scoring Crediticio (Streamlit)
 
-Aplicación web interactiva desarrollada en **Streamlit** con diseño *Dark-Tech* (atmósfera vino tinto/crimson profundo) para la evaluación de riesgo en tiempo real.
+Aplicación web interactiva desarrollada en **Streamlit** con diseño *Dark-Tech* (atmósfera verde esmeralda y pizarra) para la evaluación de riesgo en tiempo real.
 
 ---
 
