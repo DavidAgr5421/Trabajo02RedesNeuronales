@@ -10,12 +10,12 @@
 <body>
   <header id="top" class="masthead"><div class="masthead-inner">
     <a class="brand" href="./">¿ME PRESTAS? <span>/ SCORING CREDITICIO</span></a>
-    <nav aria-label="Navegación principal"><a href="blog/">Blog</a><a href="https://trabajo02redesneuronales.streamlit.app" target="_blank">App Web ↗</a><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Repositorio ↗</a></nav>
+    <nav aria-label="Navegación principal"><a href="blog/">Blog</a><a href="https://trabajo02redesneuronales.streamlit.app" target="_blank">App Web ↗</a><a href="#videos">Videos ↗</a><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Repositorio ↗</a></nav>
   </div></header>
   <main class="page-layout">
     <aside class="contents" aria-label="Contenido del informe">
       <p class="contents-label">EN ESTA ENTRADA</p>
-      <a href="#resumen">Resumen</a><a href="#introduccion">1. Introducción</a><a href="#datos">2. Datos</a><a href="#poblacion">3. Objetivo y población</a><a href="#descriptivo">4. Análisis descriptivo</a><a href="#fundamentos">5. Fundamentación matemática</a><a href="#metodologia">6. Metodología</a><a href="#resultados">7. Resultados</a><a href="#scorecard">8. Scorecard</a><a href="#interpretacion">9. Interpretación</a><a href="#discusion">10. Discusión</a><a href="#lgd">11. Pérdida dado incumplimiento</a><a href="#ia">12. Uso de IA</a><a href="#alucinacion">13. Cacería de la alucinación</a><a href="#enlaces">14. Enlaces</a><a href="#referencias">Referencias</a>
+      <a href="#resumen">Resumen</a><a href="#introduccion">1. Introducción</a><a href="#datos">2. Datos</a><a href="#poblacion">3. Objetivo y población</a><a href="#descriptivo">4. Análisis descriptivo</a><a href="#fundamentos">5. Fundamentación matemática</a><a href="#metodologia">6. Metodología</a><a href="#resultados">7. Resultados</a><a href="#scorecard">8. Scorecard</a><a href="#interpretacion">9. Interpretación</a><a href="#discusion">10. Discusión</a><a href="#lgd">11. Pérdida dado incumplimiento</a><a href="#ia">12. Uso de IA</a><a href="#alucinacion">13. Cacería de la alucinación</a><a href="#videos">14. Videos del proyecto</a><a href="#enlaces">15. Enlaces y recursos</a><a href="#referencias">Referencias</a>
       <a class="download-link" href="Trabajo%202%20(1).pdf" download>↓ Descargar PDF original</a>
     </aside>
     <article class="article">
@@ -25,7 +25,13 @@
         <h2 class="sub-title">Scoring Crediticio y Redes Neuronales para la Estimación del Riesgo de Crédito</h2>
         <p class="dek">Comparación de regresión logística y perceptrón multicapa sobre créditos de Lending Club: probabilidad de incumplimiento (PD), scorecard calibrada a 600 puntos, interpretabilidad y pérdida dado incumplimiento (LGD).</p>
         <div class="byline"><span>Alejandro Agudelo Anaya · David Agudelo Arboleda · Santiago Álvarez Martínez · Daniel Felipe López Zapata · Sara Osorio Piñerez</span><span>Redes Neuronales y Algoritmos Bioinspirados · Universidad Nacional de Colombia, Facultad de Minas</span></div>
-        <div class="article-tools"><a class="button button-dark" href="https://trabajo02redesneuronales.streamlit.app" target="_blank">Probar App ¿Me prestas? ↗</a><a class="button button-light" href="Trabajo%202%20(1).pdf" download>Descargar PDF original</a><a class="button button-light" href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Código del proyecto ↗</a></div>
+        <div class="article-tools">
+          <a class="button button-dark" href="https://trabajo02redesneuronales.streamlit.app" target="_blank">Probar App ¿Me prestas? ↗</a>
+          <a class="button" href="https://youtu.be/lFPKU94AXQw" target="_blank" style="background:#dc2626; border-color:#dc2626; color:#ffffff; font-weight:800;">▶ Video Promocional (2:30 min) ↗</a>
+          <a class="button button-light" href="#videos">Videos de Contribución ↓</a>
+          <a class="button button-light" href="Trabajo%202%20(1).pdf" download>Descargar PDF original</a>
+          <a class="button button-light" href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Código del proyecto ↗</a>
+        </div>
       </header>
       <section id="resumen" class="abstract"><p class="section-label">RESUMEN</p>
         <p>Se estima la probabilidad de incumplimiento (PD) de créditos de Lending Club a 36 meses originados entre 2007 y 2012, comparando una regresión logística (referencia) con un perceptrón multicapa (MLP) bajo particiones temporales, preprocesamiento común y presupuesto de búsqueda explícito. En la prueba temporal (28.458 créditos), el MLP de semilla 42 obtuvo AUC de 0,6257 frente a 0,6183 de la logística; el promedio de 30 semillas fue 0,6223 (DE = 0,0028). La ventaja es pequeña, la discriminación es limitada y las probabilidades subestiman la prevalencia observada (12,6 % frente a 13,6 %). El modelo se expresa como scorecard (600 puntos con odds 20:1 y PDO = 50) y se interpreta con importancia por permutación, escenarios marginales y una aproximación de Shapley.</p><p><strong>Palabras clave:</strong> riesgo de crédito, scorecard, redes neuronales, datos tabulares, calibración.</p>
@@ -175,7 +181,8 @@ abla_w J = rac{1}{n}X^T(p - y) + rac{w}{nC}$. El intercepto no se penaliza y v
             $$	ext{Odds} = rac{P(	ext{Bueno})}{P(	ext{Malo})} = rac{1 - p}{p}$$
             Al utilizar $p / (1-p)$, la IA invirtió el logit y generó una relación inversamente monótona, premiando al solicitante moroso con el puntaje más alto.</div>
           <div class="finding-field"><strong>5. Corrección aplicada:</strong> Se rederivó la ecuación formalmente:
-            $$S = A + B \ln\left(rac{1 - p}{p}ight) = A - B \operatorname{logit}(p)$$
+            $$S = A + B \ln\left(rac{1 - p}{p}
+ight) = A - B \operatorname{logit}(p)$$
             con $B = rac{50}{\ln 2} pprox 72.1348$ y $A = 600 - B \ln 20 pprox 383.9036$. Con esta corrección, $p = 0.01$ otorga 715 puntos (excelente), $p = 0.0476$ otorga 600 puntos (base) y $p = 0.90$ otorga 225 puntos (crítico).</div>
           <div class="finding-field"><strong>6. Lección aprendida:</strong> En cualquier transformación matemática que involucre conceptos financieros o de negocio, se deben realizar pruebas de límites en los extremos ($p 	o 0$ y $p 	o 1$) para verificar que el signo y la dirección monótona coincidan con el objetivo de negocio antes de adoptar el código.</div>
         </div>
@@ -236,7 +243,138 @@ abla_w J = rac{1}{n}X^T(p - y) + rac{w}{nC}$. El intercepto no se penaliza y v
           <div class="finding-field"><strong>6. Lección aprendida:</strong> Desconfiar de generalizaciones absolutas emitidas por IAs sobre la superioridad de arquitecturas profundas. Toda afirmación sobre rendimiento algorítmico debe validarse mediante una regla de comparación justa, presupuestos de búsqueda explícitos y análisis de variabilidad estadística entre corridas independientes.</div>
         </div>
       </section>
-      <section id="enlaces"><p class="section-label">14 / RECURSOS</p><h2>Enlaces</h2><ul><li>Repositorio Git: <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Trabajo02RedesNeuronales</a>.</li><li>Aplicación web: <a href="https://trabajo02redesneuronales.streamlit.app" target="_blank">¿Me prestas? · Scoring crediticio en Streamlit</a>.</li><li>Video promocional: el documento indica “[completar]”.</li><li><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_1">Código Parte 1</a>, <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_2">código Parte 2</a> y <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/app_streamlit">aplicación interactiva</a>.</li></ul></section>
+            <section id="videos">
+        <p class="section-label">14 / MULTIMEDIA</p>
+        <h2>Videos del proyecto y sustentación</h2>
+        <p>A continuación se presentan los registros audiovisuales oficiales del proyecto, incluyendo el video promocional del producto <em>¿Me prestas?</em> y las exposiciones individuales de sustentación técnica con evidencia concreta de aportes.</p>
+
+        <!-- VIDEO PROMOCIONAL -->
+        <div class="video-feature-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div>
+              <span style="font-family:var(--mono); font-size:11px; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.05em;">PITCH DEL PRODUCTO · 2 A 3 MINUTOS</span>
+              <h3 style="margin:4px 0 0; color:#ffffff; font-size:1.35rem;">Video Promocional: Plataforma ¿Me prestas?</h3>
+            </div>
+            <a class="video-card-btn" href="https://youtu.be/lFPKU94AXQw" target="_blank" style="padding:10px 16px; font-size:12px; background:#dc2626;">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Abrir en YouTube (Pantalla Completa) ↗
+            </a>
+          </div>
+          <p>Presentación ejecutiva de la aplicación web como solución integral al problema de originación y cuantificación de riesgo de crédito bajo estándares de Basilea II/III, con la participación de todos los integrantes del equipo.</p>
+          <div class="video-responsive">
+            <iframe src="https://www.youtube.com/embed/lFPKU94AXQw" title="Video Promocional - ¿Me prestas?" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- VIDEOS DE CONTRIBUCIÓN INDIVIDUAL -->
+        <h3 style="margin-top:32px; margin-bottom:8px; font-size:1.15rem; color:var(--deep);">Videos de contribución individual (Sustentación en primera persona)</h3>
+        <p style="font-size:13.5px; color:var(--muted); margin-bottom:18px;">
+          Cada integrante del equipo grabó un video de 2 a 3 minutos explicando sus contribuciones específicas, con evidencia en código fuente, formulación matemática, modelos y componentes interactivos.
+        </p>
+
+        <div class="video-grid">
+          <!-- SARA -->
+          <div class="video-card">
+            <div>
+              <div class="video-card-header">
+                <span class="video-card-badge">PARTE 2 · LGD</span>
+                <span style="font-family:var(--mono); font-size:11px; color:#94a3b8;">2:30 min</span>
+              </div>
+              <h4 class="video-card-name">Sara Osorio Piñerez</h4>
+              <p class="video-card-desc">
+                Modelado de Severidad (LGD) sobre créditos castigados: regresión no lineal, función de pérdida acotada en [0, 1], análisis econométrico fraccional y cálculo de pérdida esperada.
+              </p>
+            </div>
+            <div style="margin-top:12px;">
+              <a class="video-card-btn" href="https://www.youtube.com/watch?v=64bk3zrYsFU" target="_blank" style="width:100%; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Ver Video en YouTube ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- DANIEL -->
+          <div class="video-card">
+            <div>
+              <div class="video-card-header">
+                <span class="video-card-badge">PARTE 1 · MLP & PD</span>
+                <span style="font-family:var(--mono); font-size:11px; color:#94a3b8;">2:45 min</span>
+              </div>
+              <h4 class="video-card-name">Daniel Felipe López Zapata</h4>
+              <p class="video-card-desc">
+                Entrenamiento y regularización del Perceptrón Multicapa (MLPClassifier), optimización Adam/L-BFGS, estabilidad en 30 semillas aleatorias y métricas de discriminación (AUC / Brier).
+              </p>
+            </div>
+            <div style="margin-top:12px;">
+              <a class="video-card-btn" href="https://www.youtube.com/watch?v=9hN8B1hWywM" target="_blank" style="width:100%; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Ver Video en YouTube ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- BACO / SANTIAGO -->
+          <div class="video-card">
+            <div>
+              <div class="video-card-header">
+                <span class="video-card-badge">EDA & HIPÓTESIS</span>
+                <span style="font-family:var(--mono); font-size:11px; color:#94a3b8;">2:50 min</span>
+              </div>
+              <h4 class="video-card-name">Santiago Álvarez Martínez (Baco)</h4>
+              <p class="video-card-desc">
+                Auditoría del dataset Lending Club, definición rigurosa de cohorte temporal madura a 36 meses, validación empírica de las 4 hipótesis de riesgo y curvas descriptivas.
+              </p>
+            </div>
+            <div style="margin-top:12px;">
+              <a class="video-card-btn" href="https://www.youtube.com/watch?v=lRHa541LBnY" target="_blank" style="width:100%; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Ver Video en YouTube ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- ALEJANDRO -->
+          <div class="video-card">
+            <div>
+              <div class="video-card-header">
+                <span class="video-card-badge">CALIBRACIÓN & REPORTE</span>
+                <span style="font-family:var(--mono); font-size:11px; color:#94a3b8;">2:35 min</span>
+              </div>
+              <h4 class="video-card-name">Alejandro Agudelo Anaya</h4>
+              <p class="video-card-desc">
+                Comparación justa de modelos (Logística vs MLP), curvas de calibración de probabilidades, interpretabilidad por importancia de permutación y cacería de alucinaciones en IA.
+              </p>
+            </div>
+            <div style="margin-top:12px;">
+              <a class="video-card-btn" href="https://www.youtube.com/watch?v=m8Ez_CVvfpY" target="_blank" style="width:100%; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Ver Video en YouTube ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- DAVID -->
+          <div class="video-card">
+            <div>
+              <div class="video-card-header">
+                <span class="video-card-badge" style="background:#e0f2fe; color:#0369a1;">APP WEB & WHAT-IF</span>
+                <span style="font-family:var(--mono); font-size:11px; color:#94a3b8;">2:55 min</span>
+              </div>
+              <h4 class="video-card-name">David Agudelo Arboleda</h4>
+              <p class="video-card-desc">
+                Desarrollo del motor de inferencia interactivo en Streamlit, formulación matemática exacta de Scorecard (S0=600, Odds 20:1, PDO=50) y simulador dinámico What-If.
+              </p>
+            </div>
+            <div style="margin-top:12px;">
+              <a class="video-card-btn" href="https://www.youtube.com/watch?v=8MujIkYyee8" target="_blank" style="width:100%; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Ver Video en YouTube ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="enlaces"><p class="section-label">15 / RECURSOS</p><h2>Enlaces y recursos</h2><ul><li>Repositorio Git: <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales">Trabajo02RedesNeuronales</a>.</li><li>Aplicación web en producción: <a href="https://trabajo02redesneuronales.streamlit.app" target="_blank">¿Me prestas? · Scoring crediticio en Streamlit</a>.</li><li>Video promocional del producto: <a href="https://youtu.be/lFPKU94AXQw" target="_blank">Pitch oficial en YouTube (2 a 3 min)</a>.</li><li>Videos de contribución individual: <a href="#videos">Sustentaciones en video de Sara, Daniel, Santiago (Baco), Alejandro y David</a>.</li><li><a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_1">Código Parte 1 (PD)</a>, <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/parte_2">código Parte 2 (LGD)</a> y <a href="https://github.com/DavidAgr5421/Trabajo02RedesNeuronales/tree/main/app_streamlit">aplicación interactiva Streamlit</a>.</li></ul></section>
       <section id="referencias"><p class="section-label">BIBLIOGRAFÍA</p><h2>Referencias</h2><ol class="references">
         <li>Basel Committee on Banking Supervision. (2006). <em>International convergence of capital measurement and capital standards: A revised framework (comprehensive version)</em>. Bank for International Settlements. <a href="https://www.bis.org/publ/bcbs128.pdf">https://www.bis.org/publ/bcbs128.pdf</a></li>
         <li>Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. <em>Monthly Weather Review, 78</em>(1), 1–3. <a href="https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2">DOI</a></li>

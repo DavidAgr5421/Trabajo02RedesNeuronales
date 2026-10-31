@@ -500,6 +500,34 @@ artefactos = cargar_artefactos()
 if not artefactos["exito"]:
     st.error(f"Error cargando modelos desde '{MODEL_DIR}': {artefactos['error']}")
     st.info("Ejecuta primero: python exportar_artefactos.py")
+
+    with st.expander("🎬 Reproducir Video Promocional y Sustentaciones del Equipo", expanded=True):
+        st.markdown("""
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.76rem; color:#FCA5A5; text-transform:uppercase; margin-bottom:8px; font-weight:700;">
+            PITCH OFICIAL · PLATAFORMA FINTECH ¿ME PRESTAS?
+        </div>
+        """, unsafe_allow_html=True)
+        col_vid_promo, col_vid_info = st.columns([3, 2])
+        with col_vid_promo:
+            st.video("https://youtu.be/lFPKU94AXQw")
+        with col_vid_info:
+            st.markdown("""
+            <div style="padding:14px; background:rgba(0,0,0,0.3); border-radius:8px; border:1px solid rgba(136,19,35,0.35);">
+                <div style="font-size:0.95rem; font-weight:700; color:#FFFFFF; margin-bottom:6px;">¿Me prestas? — Solución Integral</div>
+                <div style="font-size:0.78rem; color:#94A3B8; line-height:1.5; margin-bottom:12px;">
+                    Video promocional de 2 a 3 minutos presentando la aplicación web como motor de decisión crediticia y cálculo de provisiones esperadas bajo Basilea II/III.
+                </div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:0.73rem; color:#00D2FF; font-weight:700; margin-bottom:6px;">VIDEOS INDIVIDUALES:</div>
+                <ul style="list-style:none; padding-left:0; margin:0; font-size:0.75rem; line-height:1.9;">
+                    <li><a href="https://www.youtube.com/watch?v=8MujIkYyee8" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">David Agudelo:</b> Despliegue Streamlit & What-If ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=m8Ez_CVvfpY" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Alejandro Agudelo:</b> Calibración & Cacería IA ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=9hN8B1hWywM" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Daniel López:</b> Clasificador MLP & PD ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=64bk3zrYsFU" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Sara Osorio:</b> Modelado LGD & Pérdida Esperada ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=lRHa541LBnY" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Santiago Álvarez (Baco):</b> Datos & Cohorte ↗</a></li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
     st.stop()
 
 preprocesador = artefactos["preprocesador"]
@@ -545,7 +573,7 @@ st.markdown("""
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             Reporte Blog
         </a>
-        <a class="nav-btn" href="https://youtube.com" target="_blank">
+        <a class="nav-btn" href="https://youtu.be/lFPKU94AXQw" target="_blank">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
             Video Demo
         </a>
@@ -629,6 +657,40 @@ with st.sidebar.expander("03. Historial Crediticio", expanded=False):
     open_acc = st.number_input("Cuentas de crédito abiertas:", min_value=1, max_value=50, value=int(def_open))
     total_acc = st.number_input("Total de cuentas históricas:", min_value=1, max_value=100, value=int(def_total))
 
+
+with st.sidebar.expander("🎬 Videos del Proyecto", expanded=True):
+    st.markdown("""
+    <div style="font-family:'JetBrains Mono',monospace; font-size:0.74rem; color:#FCA5A5; text-transform:uppercase; margin-bottom:8px; font-weight:700;">
+        PITCH & SUSTENTACIÓN TÉCNICA
+    </div>
+    <a href="https://youtu.be/lFPKU94AXQw" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(90deg, #DC2626 0%, #B91C1C 100%); color:#FFFFFF; padding:10px 14px; border-radius:8px; font-weight:700; font-size:0.8rem; text-decoration:none; margin-bottom:12px; box-shadow:0 4px 12px rgba(220,38,38,0.35);">
+        ▶ Video Promocional (Pitch) ↗
+    </a>
+    <div style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#94A3B8; margin-bottom:6px; font-weight:600;">VIDEOS INDIVIDUALES:</div>
+    <div style="display:flex; flex-direction:column; gap:5px;">
+        <a href="https://www.youtube.com/watch?v=8MujIkYyee8" target="_blank" style="display:flex; justify-content:space-between; align-items:center; padding:6px 9px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:6px; color:#F8FAFC; text-decoration:none; font-size:0.74rem;">
+            <span><b style="color:#00D2FF;">David Agudelo:</b> App & What-if</span>
+            <span style="color:#94A3B8;">↗</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=m8Ez_CVvfpY" target="_blank" style="display:flex; justify-content:space-between; align-items:center; padding:6px 9px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:6px; color:#F8FAFC; text-decoration:none; font-size:0.74rem;">
+            <span><b style="color:#00D2FF;">Alejandro Agudelo:</b> Calibración</span>
+            <span style="color:#94A3B8;">↗</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=9hN8B1hWywM" target="_blank" style="display:flex; justify-content:space-between; align-items:center; padding:6px 9px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:6px; color:#F8FAFC; text-decoration:none; font-size:0.74rem;">
+            <span><b style="color:#00D2FF;">Daniel López:</b> MLP & PD</span>
+            <span style="color:#94A3B8;">↗</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=64bk3zrYsFU" target="_blank" style="display:flex; justify-content:space-between; align-items:center; padding:6px 9px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:6px; color:#F8FAFC; text-decoration:none; font-size:0.74rem;">
+            <span><b style="color:#00D2FF;">Sara Osorio:</b> Regresión LGD</span>
+            <span style="color:#94A3B8;">↗</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=lRHa541LBnY" target="_blank" style="display:flex; justify-content:space-between; align-items:center; padding:6px 9px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:6px; color:#F8FAFC; text-decoration:none; font-size:0.74rem;">
+            <span><b style="color:#00D2FF;">Santiago (Baco):</b> EDA & Datos</span>
+            <span style="color:#94A3B8;">↗</span>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
 # Botón Principal CTA: "Calcular Riesgo Crediticio" (Verde Esmeralda Tech)
 btn_evaluar = st.sidebar.button("Calcular Riesgo Crediticio")
 
@@ -681,6 +743,34 @@ if not st.session_state["ejecutado"]:
             <div style="font-size: 0.8rem; color: #64748B;">Integración E[L] = PD · LGD · EAD con MLPRegressor sobre créditos castigados.</div>
         </div>
         """, unsafe_allow_html=True)
+
+    with st.expander("🎬 Reproducir Video Promocional y Sustentaciones del Equipo", expanded=True):
+        st.markdown("""
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.76rem; color:#FCA5A5; text-transform:uppercase; margin-bottom:8px; font-weight:700;">
+            PITCH OFICIAL · PLATAFORMA FINTECH ¿ME PRESTAS?
+        </div>
+        """, unsafe_allow_html=True)
+        col_vid_promo, col_vid_info = st.columns([3, 2])
+        with col_vid_promo:
+            st.video("https://youtu.be/lFPKU94AXQw")
+        with col_vid_info:
+            st.markdown("""
+            <div style="padding:14px; background:rgba(0,0,0,0.3); border-radius:8px; border:1px solid rgba(136,19,35,0.35);">
+                <div style="font-size:0.95rem; font-weight:700; color:#FFFFFF; margin-bottom:6px;">¿Me prestas? — Solución Integral</div>
+                <div style="font-size:0.78rem; color:#94A3B8; line-height:1.5; margin-bottom:12px;">
+                    Video promocional de 2 a 3 minutos presentando la aplicación web como motor de decisión crediticia y cálculo de provisiones esperadas bajo Basilea II/III.
+                </div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:0.73rem; color:#00D2FF; font-weight:700; margin-bottom:6px;">VIDEOS INDIVIDUALES:</div>
+                <ul style="list-style:none; padding-left:0; margin:0; font-size:0.75rem; line-height:1.9;">
+                    <li><a href="https://www.youtube.com/watch?v=8MujIkYyee8" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">David Agudelo:</b> Despliegue Streamlit & What-If ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=m8Ez_CVvfpY" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Alejandro Agudelo:</b> Calibración & Cacería IA ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=9hN8B1hWywM" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Daniel López:</b> Clasificador MLP & PD ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=64bk3zrYsFU" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Sara Osorio:</b> Modelado LGD & Pérdida Esperada ↗</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=lRHa541LBnY" target="_blank" style="color:#F8FAFC; text-decoration:none;">▶ <b style="color:#00D2FF;">Santiago Álvarez (Baco):</b> Datos & Cohorte ↗</a></li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
     st.stop()
 
 # ------------------------------------------------------------------------------
@@ -726,11 +816,12 @@ else:
 # ------------------------------------------------------------------------------
 # 7. SUITE ANALÍTICA REVELADA
 # ------------------------------------------------------------------------------
-tab_diag, tab_whatif, tab_pop, tab_spec = st.tabs([
+tab_diag, tab_whatif, tab_pop, tab_spec, tab_videos = st.tabs([
     "Diagnóstico del Solicitante",
     "Simulador de Impacto (What-if)",
     "Ubicación Poblacional",
-    "Metodología del Modelo"
+    "Metodología del Modelo",
+    "🎬 Videos & Sustentación"
 ])
 
 # --- TAB 1: DIAGNÓSTICO ---
@@ -1040,6 +1131,112 @@ with tab_spec:
             "Épocas de Entrenamiento": mlp_lgd.n_iter_
         }
     })
+
+
+# --- TAB 5: VIDEOS & SUSTENTACIÓN ---
+with tab_videos:
+    st.markdown("""
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #FCA5A5; text-transform: uppercase; margin-bottom: 4px;">
+        MULTIMEDIA & SUSTENTACIÓN TÉCNICA
+    </div>
+    <div style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 20px;">
+        Video promocional del producto y exposiciones individuales de cada integrante del equipo con evidencia técnica demostrativa.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<div style='font-size:1rem; font-weight:700; color:#FFFFFF; margin-bottom:8px;'>1. Video Promocional Oficial (Pitch Comercial · 2 a 3 min)</div>", unsafe_allow_html=True)
+    col_vp1, col_vp2 = st.columns([3, 2])
+    with col_vp1:
+        st.video("https://youtu.be/lFPKU94AXQw")
+    with col_vp2:
+        st.markdown("""
+        <div style="padding:16px; background:rgba(0,0,0,0.3); border-radius:10px; border:1px solid rgba(136,19,35,0.45); height:100%;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:#EF4444; font-weight:700; text-transform:uppercase;">EVALUACIÓN Y ORIGINACIÓN</div>
+            <div style="font-size:1.1rem; font-weight:700; color:#FFFFFF; margin:6px 0;">Plataforma ¿Me prestas?</div>
+            <p style="font-size:0.82rem; color:#94A3B8; line-height:1.6; margin-bottom:14px;">
+                Presentación de la aplicación como solución tecnológica para analistas y comités de crédito: motor de clasificación binaria PD, calibración en escala estándar FICO 600 puntos, interpretabilidad marginal y cálculo de pérdida esperada bajo normas de Basilea II y III.
+            </p>
+            <a href="https://youtu.be/lFPKU94AXQw" target="_blank" style="display:inline-block; background:#DC2626; color:#FFF; padding:8px 16px; border-radius:6px; font-weight:700; font-size:0.78rem; text-decoration:none; font-family:'JetBrains Mono';">
+                Abrir en YouTube ↗
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<div style='font-size:1rem; font-weight:700; color:#FFFFFF; margin-top:32px; margin-bottom:12px;'>2. Videos de Contribución Individual (Sustentación en Primera Persona)</div>", unsafe_allow_html=True)
+    
+    cv1, cv2 = st.columns(2)
+    with cv1:
+        st.markdown("""
+        <div class="kpi-card" style="padding:16px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#00D2FF; font-weight:700;">STREAMLIT & WHAT-IF</span>
+                <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:#94A3B8;">2:55 min</span>
+            </div>
+            <div style="font-size:1rem; font-weight:700; color:#FFFFFF; margin-bottom:4px;">David Agudelo Arboleda</div>
+            <div style="font-size:0.8rem; color:#94A3B8; margin-bottom:10px;">
+                Despliegue interactivo en Streamlit, implementación de Scorecard FICO/Basilea (S0=600, Odds 20:1, PDO=50) y motor What-If de sensibilidad.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.video("https://www.youtube.com/watch?v=8MujIkYyee8")
+        
+        st.markdown("""
+        <div class="kpi-card" style="padding:16px; margin-top:20px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#10B981; font-weight:700;">SEVERIDAD · LGD</span>
+                <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:#94A3B8;">2:30 min</span>
+            </div>
+            <div style="font-size:1rem; font-weight:700; color:#FFFFFF; margin-bottom:4px;">Sara Osorio Piñerez</div>
+            <div style="font-size:0.8rem; color:#94A3B8; margin-bottom:10px;">
+                Modelado de Pérdida Dado el Incumplimiento (LGD), regresor MLP acotado en [0,1], contraste con modelos fraccionales y pérdida esperada.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.video("https://www.youtube.com/watch?v=64bk3zrYsFU")
+
+        st.markdown("""
+        <div class="kpi-card" style="padding:16px; margin-top:20px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#F59E0B; font-weight:700;">AUDITORÍA & COHORTE MADURA</span>
+                <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:#94A3B8;">2:50 min</span>
+            </div>
+            <div style="font-size:1rem; font-weight:700; color:#FFFFFF; margin-bottom:4px;">Santiago Álvarez Martínez (Baco)</div>
+            <div style="font-size:0.8rem; color:#94A3B8; margin-bottom:10px;">
+                Selección de cohorte Lending Club a 36 meses sin censura temporal, formulación y contraste empírico de las 4 hipótesis de riesgo.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.video("https://www.youtube.com/watch?v=lRHa541LBnY")
+
+    with cv2:
+        st.markdown("""
+        <div class="kpi-card" style="padding:16px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#EF4444; font-weight:700;">CALIBRACIÓN & REPORTE</span>
+                <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:#94A3B8;">2:35 min</span>
+            </div>
+            <div style="font-size:1rem; font-weight:700; color:#FFFFFF; margin-bottom:4px;">Alejandro Agudelo Anaya</div>
+            <div style="font-size:0.8rem; color:#94A3B8; margin-bottom:10px;">
+                Regla de comparación justa frente a regresión logística, curvas de calibración, interpretabilidad por permutación y cacería de alucinaciones.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.video("https://www.youtube.com/watch?v=m8Ez_CVvfpY")
+
+        st.markdown("""
+        <div class="kpi-card" style="padding:16px; margin-top:20px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#A855F7; font-weight:700;">PERCEPTRÓN MULTICAPA (PD)</span>
+                <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:#94A3B8;">2:45 min</span>
+            </div>
+            <div style="font-size:1rem; font-weight:700; color:#FFFFFF; margin-bottom:4px;">Daniel Felipe López Zapata</div>
+            <div style="font-size:0.8rem; color:#94A3B8; margin-bottom:10px;">
+                Ajuste de hiperparámetros del clasificador MLP, funciones de activación ReLU/logistic, regularización L2 y estabilidad en 30 semillas.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.video("https://www.youtube.com/watch?v=9hN8B1hWywM")
+
 
 # ------------------------------------------------------------------------------
 # 8. PIE DE PÁGINA MINIMALISTA
